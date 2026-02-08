@@ -6,8 +6,12 @@ A **personal finance tracker** with intelligent automation, cross-platform acces
 
 ---
 
-## Current State (v1.1.2)
+## Current State (v1.2.0)
 
+- **Mini-wizard system** - Type-specific expense configuration in setup wizard
+- **Icon picker grid** - Visual emoji selection for expense icons
+- **Credit Card expense type** - Track balance, min payment, APR, limit
+- **Unique expense names** - Prevents duplicate expense names
 - **Setup wizard** - 8-step onboarding for new users with feature tour, pay schedule, expenses, goals
 - Multi-tenant Apps Script backend with auto-provisioned per-user tabs
 - Google OAuth via Firebase Authentication
