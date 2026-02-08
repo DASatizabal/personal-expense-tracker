@@ -2313,33 +2313,18 @@ function populateWizardExpenseTemplates() {
     if (!container) return;
 
     container.innerHTML = EXPENSE_TEMPLATES.map(template => `
-        <button type="button" class="wizard-expense-template p-2 bg-white/5 border border-white/10 rounded-lg text-center hover:border-violet-500 hover:bg-violet-500/10 transition-colors" data-id="${template.id}">
+        <button type="button" class="wizard-expense-template p-2 bg-white/5 border border-white/10 rounded-lg text-center hover:border-violet-500 hover:bg-violet-500/10 transition-colors" data-id="${template.id}" data-type="${template.type}">
             <div class="text-xl mb-1">${template.icon}</div>
             <div class="text-xs text-white truncate">${template.name}</div>
         </button>
     `).join('');
 
-    // Add click handlers (toggle behavior)
+    // Add click handlers - open mini-wizard
     container.querySelectorAll('.wizard-expense-template').forEach(btn => {
         btn.addEventListener('click', () => {
             const template = EXPENSE_TEMPLATES.find(t => t.id === btn.dataset.id);
             if (!template) return;
-
-            const existingIndex = wizardExpenses.findIndex(e => e.id === template.id);
-
-            if (existingIndex === -1) {
-                // Add expense
-                wizardExpenses.push({ ...template });
-                btn.classList.add('border-violet-500', 'bg-violet-500/20');
-                btn.classList.remove('border-white/10');
-            } else {
-                // Remove expense
-                wizardExpenses.splice(existingIndex, 1);
-                btn.classList.remove('border-violet-500', 'bg-violet-500/20');
-                btn.classList.add('border-white/10');
-            }
-
-            updateWizardAddedExpenses();
+            openMiniWizard(template);
         });
     });
 }
@@ -2382,6 +2367,208 @@ function updateWizardAddedExpenses() {
     });
 
     initLucideIcons();
+}
+
+// Mini-Wizard for expense configuration
+let currentMiniWizardTemplate = null;
+
+function openMiniWizard(template) {
+    currentMiniWizardTemplate = template;
+    const modal = document.getElementById('mini-wizard-modal');
+    const form = document.getElementById('mini-wizard-form');
+    if (!modal || !form) return;
+
+    // Reset form
+    form.reset();
+
+    // Set title and icon
+    document.getElementById('mini-wizard-icon').textContent = template.icon;
+    document.getElementById('mini-wizard-title').textContent = `Add ${template.name}`;
+    document.getElementById('mini-wizard-type').value = template.type;
+
+    // Set default icon
+    const iconInput = document.getElementById('mini-wizard-expense-icon');
+    const iconBtn = document.getElementById('mini-wizard-icon-picker-btn');
+    iconInput.value = template.icon;
+    iconBtn.textContent = template.icon;
+
+    // Pre-fill with template defaults
+    document.getElementById('mini-wizard-name').value = '';
+    document.getElementById('mini-wizard-name').placeholder = `e.g., ${template.name}`;
+
+    // Show/hide fields based on type
+    updateMiniWizardFields(template.type);
+
+    // Pre-fill type-specific defaults
+    if (template.type === 'recurring' || template.type === 'variable' || template.type === 'loan') {
+        document.getElementById('mini-wizard-amount').value = template.amount || '';
+        document.getElementById('mini-wizard-dueday').value = template.dueDay || '';
+    }
+    if (template.type === 'loan') {
+        document.getElementById('mini-wizard-totalpayments').value = template.totalPayments || '';
+    }
+    if (template.type === 'creditcard') {
+        document.getElementById('mini-wizard-dueday').value = template.dueDay || '';
+        document.getElementById('mini-wizard-balance').value = template.currentBalance || '';
+        document.getElementById('mini-wizard-minpayment').value = template.minPayment || '';
+    }
+    if (template.type === 'goal') {
+        document.getElementById('mini-wizard-target').value = template.amount || '';
+    }
+
+    // Show modal
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    initLucideIcons();
+
+    // Focus name field
+    setTimeout(() => document.getElementById('mini-wizard-name').focus(), 100);
+}
+
+function closeMiniWizard() {
+    const modal = document.getElementById('mini-wizard-modal');
+    if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    }
+    currentMiniWizardTemplate = null;
+}
+
+function updateMiniWizardFields(type) {
+    const amountGroup = document.getElementById('mini-wizard-amount-group');
+    const duedayGroup = document.getElementById('mini-wizard-dueday-group');
+    const paidGroup = document.getElementById('mini-wizard-paid-group');
+    const totalPaymentsGroup = document.getElementById('mini-wizard-totalpayments-group');
+    const goalGroup = document.getElementById('mini-wizard-goal-group');
+    const creditcardGroup = document.getElementById('mini-wizard-creditcard-group');
+
+    // Hide all optional groups first
+    totalPaymentsGroup.classList.add('hidden');
+    goalGroup.classList.add('hidden');
+    creditcardGroup.classList.add('hidden');
+
+    // Show/hide based on type
+    if (type === 'goal') {
+        amountGroup.classList.add('hidden');
+        duedayGroup.classList.add('hidden');
+        paidGroup.classList.add('hidden');
+        goalGroup.classList.remove('hidden');
+    } else if (type === 'creditcard') {
+        amountGroup.classList.add('hidden');
+        duedayGroup.classList.remove('hidden');
+        paidGroup.classList.remove('hidden');
+        creditcardGroup.classList.remove('hidden');
+    } else if (type === 'loan') {
+        amountGroup.classList.remove('hidden');
+        duedayGroup.classList.remove('hidden');
+        paidGroup.classList.remove('hidden');
+        totalPaymentsGroup.classList.remove('hidden');
+    } else {
+        // recurring, variable
+        amountGroup.classList.remove('hidden');
+        duedayGroup.classList.remove('hidden');
+        paidGroup.classList.remove('hidden');
+    }
+
+    // Update required attributes
+    document.getElementById('mini-wizard-amount').required = (type !== 'goal' && type !== 'creditcard');
+    document.getElementById('mini-wizard-dueday').required = (type !== 'goal');
+    document.getElementById('mini-wizard-totalpayments').required = (type === 'loan');
+    document.getElementById('mini-wizard-target').required = (type === 'goal');
+    document.getElementById('mini-wizard-targetdate').required = (type === 'goal');
+    document.getElementById('mini-wizard-balance').required = (type === 'creditcard');
+    document.getElementById('mini-wizard-minpayment').required = (type === 'creditcard');
+}
+
+function handleMiniWizardSubmit(addAnother = false) {
+    const type = document.getElementById('mini-wizard-type').value;
+    const name = document.getElementById('mini-wizard-name').value.trim();
+    const icon = document.getElementById('mini-wizard-expense-icon').value;
+
+    if (!name) {
+        showToast('Please enter a name for this expense.', 'error');
+        return false;
+    }
+
+    // Check for duplicate name
+    const duplicateName = wizardExpenses.find(exp =>
+        exp.name.toLowerCase() === name.toLowerCase()
+    );
+    if (duplicateName) {
+        showToast(`An expense named "${name}" already exists. Please use a unique name.`, 'error');
+        return false;
+    }
+
+    // Build expense object
+    const expense = {
+        id: 'exp_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+        name,
+        icon,
+        type
+    };
+
+    if (type === 'goal') {
+        expense.amount = parseFloat(document.getElementById('mini-wizard-target').value) || 0;
+        const targetDateStr = document.getElementById('mini-wizard-targetdate').value;
+        if (targetDateStr) {
+            expense.dueDate = new Date(targetDateStr);
+        }
+    } else if (type === 'creditcard') {
+        expense.dueDay = parseInt(document.getElementById('mini-wizard-dueday').value) || 1;
+        expense.currentBalance = parseFloat(document.getElementById('mini-wizard-balance').value) || 0;
+        expense.minPayment = parseFloat(document.getElementById('mini-wizard-minpayment').value) || 0;
+        expense.amount = expense.minPayment;
+        const limit = document.getElementById('mini-wizard-limit').value;
+        const apr = document.getElementById('mini-wizard-apr').value;
+        if (limit) expense.creditLimit = parseFloat(limit);
+        if (apr) expense.interestRate = parseFloat(apr);
+        // Check "already paid"
+        if (document.getElementById('mini-wizard-already-paid').checked) {
+            expense.alreadyPaidThisMonth = true;
+        }
+    } else {
+        expense.amount = parseFloat(document.getElementById('mini-wizard-amount').value) || 0;
+        expense.dueDay = parseInt(document.getElementById('mini-wizard-dueday').value) || 1;
+        if (type === 'loan') {
+            expense.totalPayments = parseInt(document.getElementById('mini-wizard-totalpayments').value) || 60;
+        }
+        // Check "already paid"
+        if (document.getElementById('mini-wizard-already-paid').checked) {
+            expense.alreadyPaidThisMonth = true;
+        }
+    }
+
+    // Add to wizard expenses
+    wizardExpenses.push(expense);
+    updateWizardAddedExpenses();
+
+    showToast(`${name} added!`, 'success');
+
+    if (addAnother) {
+        // Reset form for another entry of same type
+        document.getElementById('mini-wizard-form').reset();
+        document.getElementById('mini-wizard-name').value = '';
+        document.getElementById('mini-wizard-expense-icon').value = currentMiniWizardTemplate.icon;
+        document.getElementById('mini-wizard-icon-picker-btn').textContent = currentMiniWizardTemplate.icon;
+        // Re-apply defaults
+        if (currentMiniWizardTemplate) {
+            if (type === 'recurring' || type === 'variable' || type === 'loan') {
+                document.getElementById('mini-wizard-amount').value = currentMiniWizardTemplate.amount || '';
+                document.getElementById('mini-wizard-dueday').value = currentMiniWizardTemplate.dueDay || '';
+            }
+            if (type === 'loan') {
+                document.getElementById('mini-wizard-totalpayments').value = currentMiniWizardTemplate.totalPayments || '';
+            }
+            if (type === 'creditcard') {
+                document.getElementById('mini-wizard-dueday').value = currentMiniWizardTemplate.dueDay || '';
+            }
+        }
+        document.getElementById('mini-wizard-name').focus();
+    } else {
+        closeMiniWizard();
+    }
+
+    return true;
 }
 
 function populateWizardGoalTemplates() {
@@ -2539,6 +2726,20 @@ function initWizardEventListeners() {
     // Goal amount/date inputs
     document.getElementById('wizard-goal-amount')?.addEventListener('input', updateWizardGoalPerPaycheck);
     document.getElementById('wizard-goal-date')?.addEventListener('change', updateWizardGoalPerPaycheck);
+
+    // Mini-wizard event listeners
+    document.getElementById('close-mini-wizard')?.addEventListener('click', closeMiniWizard);
+    document.getElementById('mini-wizard-backdrop')?.addEventListener('click', closeMiniWizard);
+    document.getElementById('mini-wizard-form')?.addEventListener('submit', (e) => {
+        e.preventDefault();
+        handleMiniWizardSubmit(false);
+    });
+    document.getElementById('mini-wizard-add-another')?.addEventListener('click', () => {
+        handleMiniWizardSubmit(true);
+    });
+
+    // Initialize icon picker for mini-wizard
+    initIconPicker('mini-wizard-expense-icon', 'mini-wizard-icon-picker-btn', 'mini-wizard-icon-picker-grid');
 }
 
 // Event Listeners
@@ -2555,6 +2756,7 @@ document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
         closePaymentModal();
         if (bulkPaymentModal) closeBulkPaymentModal();
+        closeMiniWizard();
     }
 });
 

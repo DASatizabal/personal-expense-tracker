@@ -488,6 +488,135 @@
 
     </div>
 
+        <!-- Mini-Wizard Modal (for expense configuration) -->
+        <div class="fixed inset-0 z-[170] hidden items-center justify-center p-4" id="mini-wizard-modal">
+            <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" id="mini-wizard-backdrop"></div>
+            <div class="relative w-full max-w-md bg-slate-900/95 backdrop-blur-xl rounded-2xl border border-white/10 shadow-2xl animate-slide-up">
+                <div class="flex items-center justify-between p-4 border-b border-white/10">
+                    <div class="flex items-center gap-2">
+                        <span class="text-2xl" id="mini-wizard-icon">🏠</span>
+                        <h3 class="text-lg font-semibold text-white" id="mini-wizard-title">Add Expense</h3>
+                    </div>
+                    <button class="p-2 hover:bg-white/10 rounded-lg transition-colors" id="close-mini-wizard">
+                        <i data-lucide="x" class="w-5 h-5 text-slate-400"></i>
+                    </button>
+                </div>
+                <form id="mini-wizard-form" class="p-4 space-y-4">
+                    <input type="hidden" id="mini-wizard-type" value="">
+                    <input type="hidden" id="mini-wizard-expense-icon" value="🏠">
+
+                    <!-- Name (all types) -->
+                    <div>
+                        <label for="mini-wizard-name" class="block text-sm font-medium text-slate-400 mb-1">Name</label>
+                        <input type="text" id="mini-wizard-name" required maxlength="30"
+                            class="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-violet-500 transition-colors"
+                            placeholder="e.g., Chase Sapphire">
+                    </div>
+
+                    <!-- Icon picker -->
+                    <div class="relative">
+                        <label class="block text-sm font-medium text-slate-400 mb-1">Icon</label>
+                        <button type="button" id="mini-wizard-icon-picker-btn"
+                            class="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-center text-2xl focus:outline-none focus:border-violet-500 transition-colors cursor-pointer hover:bg-white/10">
+                            🏠
+                        </button>
+                        <div id="mini-wizard-icon-picker-grid" class="hidden absolute z-10 top-full mt-1 left-0 w-64 max-h-48 overflow-y-auto bg-slate-800 border border-white/10 rounded-xl shadow-2xl p-2 grid grid-cols-6 gap-1">
+                        </div>
+                    </div>
+
+                    <!-- Amount (recurring, variable, loan) -->
+                    <div id="mini-wizard-amount-group">
+                        <label for="mini-wizard-amount" class="block text-sm font-medium text-slate-400 mb-1">Amount</label>
+                        <input type="number" id="mini-wizard-amount" step="0.01" min="0.01"
+                            class="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-violet-500 transition-colors"
+                            placeholder="0.00">
+                    </div>
+
+                    <!-- Due Day (recurring, variable, loan, creditcard) -->
+                    <div id="mini-wizard-dueday-group">
+                        <label for="mini-wizard-dueday" class="block text-sm font-medium text-slate-400 mb-1">Due Day of Month</label>
+                        <input type="number" id="mini-wizard-dueday" min="1" max="31"
+                            class="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-violet-500 transition-colors"
+                            placeholder="1-31">
+                    </div>
+
+                    <!-- Already Paid This Month (recurring, variable) -->
+                    <div id="mini-wizard-paid-group" class="flex items-center gap-3">
+                        <input type="checkbox" id="mini-wizard-already-paid"
+                            class="w-5 h-5 rounded bg-white/5 border-white/20 text-violet-500 focus:ring-violet-500 focus:ring-offset-0 cursor-pointer">
+                        <label for="mini-wizard-already-paid" class="text-sm text-slate-300 cursor-pointer">Already paid this month</label>
+                    </div>
+
+                    <!-- Total Payments (loan only) -->
+                    <div id="mini-wizard-totalpayments-group" class="hidden">
+                        <label for="mini-wizard-totalpayments" class="block text-sm font-medium text-slate-400 mb-1">Total Payments</label>
+                        <input type="number" id="mini-wizard-totalpayments" min="1"
+                            class="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-violet-500 transition-colors"
+                            placeholder="e.g., 60">
+                    </div>
+
+                    <!-- Goal fields -->
+                    <div id="mini-wizard-goal-group" class="hidden space-y-4">
+                        <div>
+                            <label for="mini-wizard-target" class="block text-sm font-medium text-slate-400 mb-1">Target Amount</label>
+                            <input type="number" id="mini-wizard-target" step="0.01" min="1"
+                                class="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-violet-500 transition-colors"
+                                placeholder="5000">
+                        </div>
+                        <div>
+                            <label for="mini-wizard-targetdate" class="block text-sm font-medium text-slate-400 mb-1">Target Date</label>
+                            <input type="date" id="mini-wizard-targetdate"
+                                class="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-violet-500 transition-colors">
+                        </div>
+                    </div>
+
+                    <!-- Credit Card fields -->
+                    <div id="mini-wizard-creditcard-group" class="hidden space-y-4">
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label for="mini-wizard-balance" class="block text-sm font-medium text-slate-400 mb-1">Current Balance</label>
+                                <input type="number" id="mini-wizard-balance" step="0.01" min="0"
+                                    class="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-violet-500 transition-colors"
+                                    placeholder="0.00">
+                            </div>
+                            <div>
+                                <label for="mini-wizard-minpayment" class="block text-sm font-medium text-slate-400 mb-1">Min Payment</label>
+                                <input type="number" id="mini-wizard-minpayment" step="0.01" min="0"
+                                    class="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-violet-500 transition-colors"
+                                    placeholder="0.00">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label for="mini-wizard-limit" class="block text-sm font-medium text-slate-400 mb-1">Credit Limit</label>
+                                <input type="number" id="mini-wizard-limit" step="0.01" min="0"
+                                    class="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-violet-500 transition-colors"
+                                    placeholder="Optional">
+                            </div>
+                            <div>
+                                <label for="mini-wizard-apr" class="block text-sm font-medium text-slate-400 mb-1">APR %</label>
+                                <input type="number" id="mini-wizard-apr" step="0.01" min="0" max="100"
+                                    class="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-white placeholder-slate-500 focus:outline-none focus:border-violet-500 transition-colors"
+                                    placeholder="Optional">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action buttons -->
+                    <div class="flex gap-2 pt-2">
+                        <button type="submit"
+                            class="flex-1 py-2 bg-violet-600 hover:bg-violet-500 text-white font-semibold rounded-xl transition-colors">
+                            Add Expense
+                        </button>
+                        <button type="button" id="mini-wizard-add-another"
+                            class="px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-xl transition-colors" title="Save and add another">
+                            <i data-lucide="plus" class="w-5 h-5"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
         <!-- Settings Modal -->
         <div class="fixed inset-0 z-50 hidden items-center justify-center p-4" id="settings-modal">
             <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" id="settings-modal-backdrop"></div>

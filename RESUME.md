@@ -147,6 +147,7 @@ Edit `js/app.js`
 
 | Version | Changes |
 |---------|---------|
+| v1.2.0 | Mini-wizard system for expense configuration in setup wizard |
 | v1.1.5 | Unique expense names validation (prevents duplicates) |
 | v1.1.4 | Credit Card expense type with balance, min payment, APR, limit |
 | v1.1.3 | Icon picker grid for expense form (replaces text input) |

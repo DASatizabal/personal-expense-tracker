@@ -39,25 +39,25 @@ A **personal finance tracker** with intelligent automation, cross-platform acces
   - e.g., "Chase Sapphire" vs "Amex Gold" for credit cards
 
 ### Phase 2: Mini-Wizard System
-- [ ] **4. Mini-wizard framework** - When user selects an expense type in wizard:
+- [x] **4. Mini-wizard framework** - When user selects an expense type in wizard:
   - Show focused sub-wizard to configure that specific expense
   - Type-specific required/optional fields
   - Uses icon picker from Phase 1
 
-- [ ] **5. Recurring/Rent mini-wizard** - Configuration options:
+- [x] **5. Recurring/Rent mini-wizard** - Configuration options:
   - Required: Name, Amount due, Due day of month, Icon
   - "Already paid this month" checkbox
     - If checked: Card shows "Paid this month" status
     - If unchecked: Show past due ONLY if current day > due day (not equal)
   - Maximum past due capped at 1 month
 
-- [ ] **6. Other expense type mini-wizards**:
+- [x] **6. Other expense type mini-wizards**:
   - Loan: Name, Amount, Due day, Total payments, Icon
   - Goal: Name, Target amount, Target date, Icon
   - Variable: Name, Typical amount, Due day, Icon
   - Credit Card: All fields from Phase 1 item #2
 
-- [ ] **7. "Add another" option** - At bottom of each mini-wizard:
+- [x] **7. "Add another" option** - At bottom of each mini-wizard:
   - Button to add another expense of the same type
   - Clears form, keeps same type selected
 
