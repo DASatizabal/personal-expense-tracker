@@ -16,16 +16,16 @@ const APP_VERSION = '1.0.0';
 // Admin: can access any user's data via a user switcher
 const AUTH_ROLES = {
     PRIMARY_USER: '',  // Set to your email to use the default Payments tab
-    ADMINS: []         // Add admin emails here
+    ADMINS: ['dasatizabal@gmail.com']         // Add admin emails here
 };
 
 const FIREBASE_CONFIG = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT.firebaseapp.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT.appspot.com",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId: "YOUR_APP_ID"
+    apiKey: "AIzaSyCFcvnQzlQUUYTyLENT0dWQBmSFWGSlEsA",
+    authDomain: "personal-expense-tracker-c93a6.firebaseapp.com",
+    projectId: "personal-expense-tracker-c93a6",
+    storageBucket: "personal-expense-tracker-c93a6.firebasestorage.app",
+    messagingSenderId: "576147969053",
+    appId: "1:576147969053:web:29d8158e6e0710f67f22f4"
 };
 
 // Supported currencies
@@ -61,10 +61,10 @@ const CONFIG = {
     // 5. Deploy as Web app with "Anyone" access
     // 6. Paste the deployment URL below
 
-    APPS_SCRIPT_URL: 'YOUR_APPS_SCRIPT_URL_HERE',
+    APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbw5jgxqjPc3oZfqPQQ47kb1BWHx6ulQkWO9OUDlcObuwpZdP2L5OEOk4EyJLio9jwET/exec',
 
     // Set to true to use localStorage only (offline mode)
-    USE_LOCAL_STORAGE: true
+    USE_LOCAL_STORAGE: false
 };
 
 // Example expense categories - customize these for your needs
