@@ -6,7 +6,7 @@ A **personal finance tracker** with intelligent automation, cross-platform acces
 
 ---
 
-## Current State (v1.2.1)
+## Current State (v1.2.2)
 
 - **Mini-wizard system** - Type-specific expense configuration in setup wizard
 - **Icon picker grid** - Visual emoji selection for expense icons

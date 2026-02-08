@@ -1,6 +1,6 @@
 # Personal Expense Tracker - Project Resume
 
-**Current Version: 1.2.1**
+**Current Version: 1.2.2**
 
 ---
 
@@ -147,6 +147,7 @@ Edit `js/app.js`
 
 | Version | Changes |
 |---------|---------|
+| v1.2.2 | Fix past due calculation: use createdDate instead of hardcoded Jan 2026; create payment records for "already paid" flag; expand icon picker to 70 icons |
 | v1.2.1 | Mini-wizard: rename buttons to "Finish Adding [Name]" / "Add Another [Name]", swap positions |
 | v1.2.0 | Mini-wizard system for expense configuration in setup wizard |
 | v1.1.5 | Unique expense names validation (prevents duplicates) |
