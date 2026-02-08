@@ -2213,9 +2213,28 @@ function updateWizardNavButtons() {
 }
 
 function nextWizardStep() {
+    // Special handling for step 6: process selected templates through mini-wizards
+    if (wizardStep === 6 && selectedTemplates.length > 0) {
+        processNextSelectedTemplate();
+        return;
+    }
+
     if (wizardStep < WIZARD_TOTAL_STEPS) {
         showWizardStep(wizardStep + 1);
     }
+}
+
+// Process selected templates one by one through mini-wizards
+function processNextSelectedTemplate() {
+    if (selectedTemplates.length === 0) {
+        // All templates processed, move to step 7
+        showWizardStep(7);
+        return;
+    }
+
+    // Get first unprocessed template
+    const template = selectedTemplates[0];
+    openMiniWizard(template, true); // true = called from wizard flow
 }
 
 function prevWizardStep() {
@@ -2308,9 +2327,15 @@ function updateWizardCurrencySelection() {
     });
 }
 
+// Track selected templates (not yet configured)
+let selectedTemplates = [];
+
 function populateWizardExpenseTemplates() {
     const container = document.getElementById('wizard-expense-templates');
     if (!container) return;
+
+    // Reset selected templates
+    selectedTemplates = [];
 
     container.innerHTML = EXPENSE_TEMPLATES.map(template => `
         <button type="button" class="wizard-expense-template p-2 bg-white/5 border border-white/10 rounded-lg text-center hover:border-violet-500 hover:bg-violet-500/10 transition-colors" data-id="${template.id}" data-type="${template.type}">
@@ -2319,12 +2344,25 @@ function populateWizardExpenseTemplates() {
         </button>
     `).join('');
 
-    // Add click handlers - open mini-wizard
+    // Add click handlers - toggle selection
     container.querySelectorAll('.wizard-expense-template').forEach(btn => {
         btn.addEventListener('click', () => {
             const template = EXPENSE_TEMPLATES.find(t => t.id === btn.dataset.id);
             if (!template) return;
-            openMiniWizard(template);
+
+            const existingIndex = selectedTemplates.findIndex(t => t.id === template.id);
+
+            if (existingIndex === -1) {
+                // Select template
+                selectedTemplates.push({ ...template });
+                btn.classList.add('border-violet-500', 'bg-violet-500/20');
+                btn.classList.remove('border-white/10');
+            } else {
+                // Deselect template
+                selectedTemplates.splice(existingIndex, 1);
+                btn.classList.remove('border-violet-500', 'bg-violet-500/20');
+                btn.classList.add('border-white/10');
+            }
         });
     });
 }
@@ -2372,8 +2410,11 @@ function updateWizardAddedExpenses() {
 // Mini-Wizard for expense configuration
 let currentMiniWizardTemplate = null;
 
-function openMiniWizard(template) {
+let miniWizardFromFlow = false; // Track if mini-wizard was opened from wizard flow
+
+function openMiniWizard(template, fromWizardFlow = false) {
     currentMiniWizardTemplate = template;
+    miniWizardFromFlow = fromWizardFlow;
     const modal = document.getElementById('mini-wizard-modal');
     const form = document.getElementById('mini-wizard-form');
     if (!modal || !form) return;
@@ -2381,9 +2422,15 @@ function openMiniWizard(template) {
     // Reset form
     form.reset();
 
+    // Update title to show progress if from flow
+    const remaining = selectedTemplates.length;
+    const title = fromWizardFlow && remaining > 1
+        ? `Add ${template.name} (${remaining} remaining)`
+        : `Add ${template.name}`;
+
     // Set title and icon
     document.getElementById('mini-wizard-icon').textContent = template.icon;
-    document.getElementById('mini-wizard-title').textContent = `Add ${template.name}`;
+    document.getElementById('mini-wizard-title').textContent = title;
     document.getElementById('mini-wizard-type').value = template.type;
 
     // Set default icon
@@ -2425,13 +2472,22 @@ function openMiniWizard(template) {
     setTimeout(() => document.getElementById('mini-wizard-name').focus(), 100);
 }
 
-function closeMiniWizard() {
+function closeMiniWizard(fromSave = false) {
     const modal = document.getElementById('mini-wizard-modal');
     if (modal) {
         modal.classList.add('hidden');
         modal.classList.remove('flex');
     }
-    currentMiniWizardTemplate = null;
+
+    // If closing during wizard flow without saving, skip this template and process next
+    if (miniWizardFromFlow && currentMiniWizardTemplate && !fromSave) {
+        selectedTemplates = selectedTemplates.filter(t => t.id !== currentMiniWizardTemplate.id);
+        currentMiniWizardTemplate = null;
+        // Process next template
+        processNextSelectedTemplate();
+    } else {
+        currentMiniWizardTemplate = null;
+    }
 }
 
 function updateMiniWizardFields(type) {
@@ -2544,6 +2600,11 @@ function handleMiniWizardSubmit(addAnother = false) {
 
     showToast(`${name} added!`, 'success');
 
+    // Remove from selectedTemplates if from wizard flow
+    if (miniWizardFromFlow && currentMiniWizardTemplate) {
+        selectedTemplates = selectedTemplates.filter(t => t.id !== currentMiniWizardTemplate.id);
+    }
+
     if (addAnother) {
         // Reset form for another entry of same type
         document.getElementById('mini-wizard-form').reset();
@@ -2565,7 +2626,12 @@ function handleMiniWizardSubmit(addAnother = false) {
         }
         document.getElementById('mini-wizard-name').focus();
     } else {
-        closeMiniWizard();
+        closeMiniWizard(true); // true = from save, don't auto-process next
+
+        // If from wizard flow, process next template or move to step 7
+        if (miniWizardFromFlow) {
+            processNextSelectedTemplate();
+        }
     }
 
     return true;
