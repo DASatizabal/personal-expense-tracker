@@ -37,7 +37,10 @@ const EXPENSE_ICONS = [
     '🏠', '🚗', '📱', '💡', '🛡️', '📡', '💳', '🏥', '🎓', '👶',
     '🐕', '🍕', '☕', '🛒', '⛽', '🚌', '✈️', '🏋️', '💈', '👔',
     '💰', '🎯', '🏖️', '🎮', '💻', '📚', '🎬', '🎵', '🔧', '🏰',
-    '💎', '🎁', '🏆', '⭐', '❤️', '🔥', '🌟', '🚀', '🌴', '🎄'
+    '💎', '🎁', '🏆', '⭐', '❤️', '🔥', '🌟', '🚀', '🌴', '🎄',
+    '💧', '🗑️', '🔌', '📺', '🌐', '🥡', '🍔', '🍷', '🥤', '🧁',
+    '🚕', '🚂', '⛴️', '🅿️', '🛞', '💊', '🦷', '👓', '🧘', '💆',
+    '👗', '👟', '🧴', '🪴', '🛋️', '🏦', '📊', '🧾', '💵', '📈'
 ];
 
 // Initialize an icon picker on given elements
@@ -536,6 +539,16 @@ function handleExpenseFormSubmit(e) {
     }
 
     const expense = { id, name, icon, type, amount };
+
+    // Set createdDate for new expenses (preserve existing for edits)
+    if (!editId) {
+        expense.createdDate = getTodayDateString();
+    } else {
+        const existing = expenses.find(e => e.id === id);
+        if (existing && existing.createdDate) {
+            expense.createdDate = existing.createdDate;
+        }
+    }
 
     if (type === 'goal') {
         const dueDateStr = document.getElementById('expense-due-date').value;
@@ -1218,13 +1231,22 @@ function getPaymentCountForCategory(expenseId) {
 }
 
 // Calculate credit or past due amount for recurring expenses
-// Based on months elapsed since Jan 2026
+// Based on months elapsed since expense was created
 function getCreditOrPastDue(expense) {
     if (expense.type !== 'recurring') return { credit: 0, pastDue: 0 };
 
     const today = new Date();
-    const startYear = 2026;
-    const startMonth = 0; // January
+
+    // Use expense's createdDate as start, fallback to Jan 2026 for legacy expenses
+    let startYear, startMonth;
+    if (expense.createdDate) {
+        const created = parseLocalDate(expense.createdDate);
+        startYear = created.getFullYear();
+        startMonth = created.getMonth();
+    } else {
+        startYear = 2026;
+        startMonth = 0; // January
+    }
 
     // Calculate months where payment is expected (only count current month if due day has passed)
     const fullMonthsElapsed = (today.getFullYear() - startYear) * 12 + (today.getMonth() - startMonth);
@@ -2243,7 +2265,7 @@ function prevWizardStep() {
     }
 }
 
-function completeWizard() {
+async function completeWizard() {
     // Save wizard settings
     saveWizardSettings();
 
@@ -2255,7 +2277,32 @@ function completeWizard() {
     hideSetupWizard();
 
     // Initialize app
-    init();
+    await init();
+
+    // Create payment records for expenses marked "already paid this month"
+    for (const expense of wizardExpenses) {
+        if (expense.alreadyPaidThisMonth) {
+            const payment = {
+                category: expense.id,
+                amount: expense.amount,
+                date: getTodayDateString(),
+                notes: 'Already paid (setup wizard)'
+            };
+            try {
+                await SheetsAPI.savePayment(payment);
+            } catch (error) {
+                console.error(`Failed to save initial payment for ${expense.name}:`, error);
+            }
+        }
+    }
+
+    // Refresh payments so UI reflects the "already paid" entries
+    if (wizardExpenses.some(e => e.alreadyPaidThisMonth)) {
+        payments = await SheetsAPI.getPayments();
+        renderExpenseCards();
+        renderPaymentHistory();
+        updateSummary();
+    }
 
     showToast(I18n.t('toast.welcomeBack'), 'success');
 }
@@ -2566,7 +2613,8 @@ function handleMiniWizardSubmit(addAnother = false) {
         id: 'exp_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
         name,
         icon,
-        type
+        type,
+        createdDate: getTodayDateString()
     };
 
     if (type === 'goal') {
