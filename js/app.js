@@ -2122,6 +2122,17 @@ function completeWizard() {
     showToast(I18n.t('toast.welcomeBack'), 'success');
 }
 
+function restartWizard() {
+    // Clear wizard completion flag
+    localStorage.removeItem(getWizardStorageKey('wizard_completed'));
+
+    // Close settings modal
+    closeSettingsModal();
+
+    // Show wizard from the beginning
+    showSetupWizard();
+}
+
 function saveWizardSettings() {
     // Save pay schedule
     localStorage.setItem(getWizardStorageKey('pay_schedule'), JSON.stringify({
@@ -2450,6 +2461,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('close-settings-modal')?.addEventListener('click', closeSettingsModal);
     document.getElementById('settings-modal-backdrop')?.addEventListener('click', closeSettingsModal);
     document.getElementById('add-expense-btn')?.addEventListener('click', () => openExpenseForm());
+    document.getElementById('restart-wizard-btn')?.addEventListener('click', restartWizard);
 
     // Initialize expense form modal
     document.getElementById('close-expense-form')?.addEventListener('click', closeExpenseForm);

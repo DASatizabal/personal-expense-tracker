@@ -147,6 +147,7 @@ Edit `js/app.js`
 
 | Version | Changes |
 |---------|---------|
+| v1.1.2 | Settings: option to run setup wizard again |
 | v1.1.1 | Wizard expenses: toggle selection by clicking again |
 | v1.1.0 | **Setup Wizard**: 8-step onboarding wizard for new users with feature tour, pay schedule, currency selection, and expense quick-add |
 | v1.0.1 | Configure Firebase Auth and Google Sheets cloud sync |
