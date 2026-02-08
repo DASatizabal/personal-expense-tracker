@@ -22,50 +22,57 @@ A **personal finance tracker** with intelligent automation, cross-platform acces
 
 ## Short-Term Priorities
 
-### Setup Wizard Enhancements
-- [ ] **Credit Card expense type** - New expense type with:
-  - Required inputs: Current balance, Payment due date, Minimum amount due
-  - Optional inputs: Interest rate (APR), Credit limit, Billing cycle close date
-
-- [ ] **Mini-wizard for each expense** - When user selects an expense type in the wizard:
-  - Show a focused sub-wizard to configure that specific expense
-  - Type-specific required/optional fields
-  - Preview of how the expense card will look
-
-- [ ] **Mortgage/Rent mini-wizard** - Configuration options:
-  - Required: Amount due, Due day of month
-  - "Already paid this month" checkbox
-    - If checked: Card shows "Paid this month" status
-    - If unchecked: Show past due ONLY if current day > due day (not equal)
-  - Maximum past due capped at 1 month (e.g., $100 rent due on 1st, today is 2nd = $100 past due max)
-
-- [ ] **"Add another" option** - At bottom of each expense mini-wizard:
-  - Button to add another expense of the same type
-  - Useful for users with multiple mortgages, credit cards, etc.
-
-- [ ] **Unique expense names** - Require unique names for each expense:
-  - Help differentiate multiple expenses of same type
-  - e.g., "Chase Sapphire" vs "Amex Gold" for credit cards
-  - e.g., "Primary Mortgage" vs "Rental Property" for mortgages
-
-### UI Improvements
-- [ ] **Icon picker grid** - Replace text input for icons with visual emoji grid:
+### Phase 1: Foundation Components
+- [ ] **1. Icon picker grid** - Replace text input for icons with visual emoji grid:
   - Reference implementation: `/hours-worked-tracker` icon picker
   - Grid popup with 30+ common emoji options
   - Click to select, click outside to close
-  - Apply everywhere icons are selected (Settings, Wizard, etc.)
+  - Reusable component for Settings + Wizard + Mini-wizards
+
+- [ ] **2. Credit Card expense type** - Add new type to config:
+  - Required inputs: Current balance, Payment due date, Minimum amount due
+  - Optional inputs: Interest rate (APR), Credit limit, Billing cycle close date
+
+- [ ] **3. Unique expense names** - Validation logic:
+  - Require unique names for each expense
+  - Prevent duplicates on save
+  - e.g., "Chase Sapphire" vs "Amex Gold" for credit cards
+
+### Phase 2: Mini-Wizard System
+- [ ] **4. Mini-wizard framework** - When user selects an expense type in wizard:
+  - Show focused sub-wizard to configure that specific expense
+  - Type-specific required/optional fields
+  - Uses icon picker from Phase 1
+
+- [ ] **5. Recurring/Rent mini-wizard** - Configuration options:
+  - Required: Name, Amount due, Due day of month, Icon
+  - "Already paid this month" checkbox
+    - If checked: Card shows "Paid this month" status
+    - If unchecked: Show past due ONLY if current day > due day (not equal)
+  - Maximum past due capped at 1 month
+
+- [ ] **6. Other expense type mini-wizards**:
+  - Loan: Name, Amount, Due day, Total payments, Icon
+  - Goal: Name, Target amount, Target date, Icon
+  - Variable: Name, Typical amount, Due day, Icon
+  - Credit Card: All fields from Phase 1 item #2
+
+- [ ] **7. "Add another" option** - At bottom of each mini-wizard:
+  - Button to add another expense of the same type
+  - Clears form, keeps same type selected
+
+### Phase 3: Polish
+- [ ] **8. Add i18n translations** - Spanish + Haitian Creole for all new strings
 
 ### User Experience
 - [x] Onboarding wizard for new users
 - [ ] User templates (College Student, Young Professional, etc.)
-- [ ] More language translations
 
-### Expanded Expense Types
+### Future Expense Types
 - [ ] Weekly expenses
 - [ ] Quarterly expenses
 - [ ] Annual expenses (property tax, subscriptions)
 - [ ] One-time expenses
-- [ ] Credit cards (see above)
 
 ### Notifications
 - [ ] n8n/webhook integration for reminders
