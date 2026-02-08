@@ -2463,6 +2463,12 @@ function openMiniWizard(template, fromWizardFlow = false) {
         document.getElementById('mini-wizard-target').value = template.amount || '';
     }
 
+    // Update action button labels with template name
+    const finishBtn = document.getElementById('mini-wizard-finish-btn');
+    const addAnotherBtn = document.getElementById('mini-wizard-add-another');
+    if (finishBtn) finishBtn.textContent = `Finish Adding ${template.name}`;
+    if (addAnotherBtn) addAnotherBtn.textContent = `Add Another ${template.name}`;
+
     // Show modal
     modal.classList.remove('hidden');
     modal.classList.add('flex');

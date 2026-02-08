@@ -1,6 +1,6 @@
 # Personal Expense Tracker - Project Resume
 
-**Current Version: 1.1.0**
+**Current Version: 1.2.1**
 
 ---
 
@@ -147,6 +147,7 @@ Edit `js/app.js`
 
 | Version | Changes |
 |---------|---------|
+| v1.2.1 | Mini-wizard: rename buttons to "Finish Adding [Name]" / "Add Another [Name]", swap positions |
 | v1.2.0 | Mini-wizard system for expense configuration in setup wizard |
 | v1.1.5 | Unique expense names validation (prevents duplicates) |
 | v1.1.4 | Credit Card expense type with balance, min payment, APR, limit |
