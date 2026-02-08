@@ -517,12 +517,23 @@ function updateExpenseFormFields() {
 function handleExpenseFormSubmit(e) {
     e.preventDefault();
 
-    const id = document.getElementById('expense-edit-id').value || 'exp_' + Date.now();
+    const editId = document.getElementById('expense-edit-id').value;
+    const id = editId || 'exp_' + Date.now();
     const name = document.getElementById('expense-name').value.trim();
     const icon = document.getElementById('expense-icon').value.trim();
     const type = document.getElementById('expense-type').value;
     const amountVal = document.getElementById('expense-amount').value;
     const amount = amountVal ? parseFloat(amountVal) : 0;
+
+    // Check for duplicate name (case-insensitive, excluding current expense if editing)
+    const expenses = getExpenses();
+    const duplicateName = expenses.find(exp =>
+        exp.name.toLowerCase() === name.toLowerCase() && exp.id !== id
+    );
+    if (duplicateName) {
+        showToast(`An expense named "${name}" already exists. Please use a unique name.`, 'error');
+        return;
+    }
 
     const expense = { id, name, icon, type, amount };
 
@@ -551,8 +562,7 @@ function handleExpenseFormSubmit(e) {
         if (billingCloseDay) expense.billingCloseDay = parseInt(billingCloseDay);
     }
 
-    // Update or add expense
-    const expenses = getExpenses();
+    // Update or add expense (expenses already fetched above for duplicate check)
     const existingIndex = expenses.findIndex(e => e.id === id);
     if (existingIndex >= 0) {
         expenses[existingIndex] = expense;

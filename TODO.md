@@ -33,7 +33,7 @@ A **personal finance tracker** with intelligent automation, cross-platform acces
   - Required inputs: Current balance, Payment due date, Minimum amount due
   - Optional inputs: Interest rate (APR), Credit limit, Billing cycle close date
 
-- [ ] **3. Unique expense names** - Validation logic:
+- [x] **3. Unique expense names** - Validation logic:
   - Require unique names for each expense
   - Prevent duplicates on save
   - e.g., "Chase Sapphire" vs "Amex Gold" for credit cards
