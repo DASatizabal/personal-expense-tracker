@@ -2189,19 +2189,27 @@ function populateWizardExpenseTemplates() {
         </button>
     `).join('');
 
-    // Add click handlers
+    // Add click handlers (toggle behavior)
     container.querySelectorAll('.wizard-expense-template').forEach(btn => {
         btn.addEventListener('click', () => {
             const template = EXPENSE_TEMPLATES.find(t => t.id === btn.dataset.id);
-            if (template && !wizardExpenses.find(e => e.id === template.id)) {
-                wizardExpenses.push({ ...template });
-                showToast(I18n.t('wizard.expenses.added', { name: template.name }), 'success');
-                updateWizardAddedExpenses();
+            if (!template) return;
 
-                // Mark as added
-                btn.classList.add('opacity-50');
-                btn.disabled = true;
+            const existingIndex = wizardExpenses.findIndex(e => e.id === template.id);
+
+            if (existingIndex === -1) {
+                // Add expense
+                wizardExpenses.push({ ...template });
+                btn.classList.add('border-violet-500', 'bg-violet-500/20');
+                btn.classList.remove('border-white/10');
+            } else {
+                // Remove expense
+                wizardExpenses.splice(existingIndex, 1);
+                btn.classList.remove('border-violet-500', 'bg-violet-500/20');
+                btn.classList.add('border-white/10');
             }
+
+            updateWizardAddedExpenses();
         });
     });
 }
@@ -2230,14 +2238,15 @@ function updateWizardAddedExpenses() {
     // Add remove handlers
     container.querySelectorAll('.wizard-remove-expense').forEach(btn => {
         btn.addEventListener('click', () => {
-            wizardExpenses = wizardExpenses.filter(e => e.id !== btn.dataset.id);
+            const expenseId = btn.dataset.id;
+            wizardExpenses = wizardExpenses.filter(e => e.id !== expenseId);
             updateWizardAddedExpenses();
 
-            // Re-enable template button
-            const templateBtn = document.querySelector(`.wizard-expense-template[data-id="${btn.dataset.id}"]`);
+            // Update template button styling
+            const templateBtn = document.querySelector(`.wizard-expense-template[data-id="${expenseId}"]`);
             if (templateBtn) {
-                templateBtn.classList.remove('opacity-50');
-                templateBtn.disabled = false;
+                templateBtn.classList.remove('border-violet-500', 'bg-violet-500/20');
+                templateBtn.classList.add('border-white/10');
             }
         });
     });
