@@ -443,12 +443,26 @@ function openExpenseForm(expenseId = null) {
             if (expense.totalPayments) {
                 document.getElementById('expense-total-payments').value = expense.totalPayments;
             }
+            // Credit card fields
+            if (expense.type === 'creditcard') {
+                document.getElementById('expense-current-balance').value = expense.currentBalance || '';
+                document.getElementById('expense-min-payment').value = expense.minPayment || '';
+                document.getElementById('expense-credit-limit').value = expense.creditLimit || '';
+                document.getElementById('expense-interest-rate').value = expense.interestRate || '';
+                document.getElementById('expense-billing-close-day').value = expense.billingCloseDay || '';
+            }
         }
     } else {
         // Add mode
         title.textContent = I18n.t('settings.addExpense');
         iconInput.value = defaultIcon;
         iconBtn.textContent = defaultIcon;
+        // Clear credit card fields
+        document.getElementById('expense-current-balance').value = '';
+        document.getElementById('expense-min-payment').value = '';
+        document.getElementById('expense-credit-limit').value = '';
+        document.getElementById('expense-interest-rate').value = '';
+        document.getElementById('expense-billing-close-day').value = '';
     }
 
     updateExpenseFormFields();
@@ -469,11 +483,30 @@ function updateExpenseFormFields() {
     const dueDayGroup = document.getElementById('due-day-group');
     const dueDateGroup = document.getElementById('due-date-group');
     const totalPaymentsGroup = document.getElementById('total-payments-group');
+    const creditCardGroup = document.getElementById('credit-card-group');
+    const amountInput = document.getElementById('expense-amount');
+    const amountLabel = amountInput?.previousElementSibling;
 
     // Show/hide fields based on type
     dueDayGroup.classList.toggle('hidden', type === 'goal');
     dueDateGroup.classList.toggle('hidden', type !== 'goal');
     totalPaymentsGroup.classList.toggle('hidden', type !== 'loan');
+    creditCardGroup.classList.toggle('hidden', type !== 'creditcard');
+
+    // For credit cards, "Amount" becomes optional (minimum payment is the key field)
+    // Update label and required state
+    if (type === 'creditcard') {
+        if (amountLabel) amountLabel.textContent = 'Payment Amount (optional)';
+        amountInput.required = false;
+        document.getElementById('expense-current-balance').required = true;
+        document.getElementById('expense-min-payment').required = true;
+    } else {
+        if (amountLabel) amountLabel.setAttribute('data-i18n', 'label.amount');
+        if (amountLabel) amountLabel.textContent = I18n.t('label.amount');
+        amountInput.required = true;
+        document.getElementById('expense-current-balance').required = false;
+        document.getElementById('expense-min-payment').required = false;
+    }
 
     // Update required attributes
     document.getElementById('expense-due-day').required = type !== 'goal';
@@ -488,7 +521,8 @@ function handleExpenseFormSubmit(e) {
     const name = document.getElementById('expense-name').value.trim();
     const icon = document.getElementById('expense-icon').value.trim();
     const type = document.getElementById('expense-type').value;
-    const amount = parseFloat(document.getElementById('expense-amount').value);
+    const amountVal = document.getElementById('expense-amount').value;
+    const amount = amountVal ? parseFloat(amountVal) : 0;
 
     const expense = { id, name, icon, type, amount };
 
@@ -501,6 +535,20 @@ function handleExpenseFormSubmit(e) {
 
     if (type === 'loan') {
         expense.totalPayments = parseInt(document.getElementById('expense-total-payments').value);
+    }
+
+    if (type === 'creditcard') {
+        expense.currentBalance = parseFloat(document.getElementById('expense-current-balance').value) || 0;
+        expense.minPayment = parseFloat(document.getElementById('expense-min-payment').value) || 0;
+        // Use minPayment as the default amount if not specified
+        if (!expense.amount) expense.amount = expense.minPayment;
+        // Optional fields
+        const creditLimit = document.getElementById('expense-credit-limit').value;
+        const interestRate = document.getElementById('expense-interest-rate').value;
+        const billingCloseDay = document.getElementById('expense-billing-close-day').value;
+        if (creditLimit) expense.creditLimit = parseFloat(creditLimit);
+        if (interestRate) expense.interestRate = parseFloat(interestRate);
+        if (billingCloseDay) expense.billingCloseDay = parseInt(billingCloseDay);
     }
 
     // Update or add expense

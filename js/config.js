@@ -1,6 +1,6 @@
 // Configuration for Personal Expense Tracker
 
-const APP_VERSION = '1.1.3';
+const APP_VERSION = '1.1.4';
 
 // Firebase Configuration
 // To set up:
@@ -59,7 +59,8 @@ const EXPENSE_TEMPLATES = [
     { id: 'phone', name: 'Phone', icon: '📱', type: 'recurring', amount: 50, dueDay: 1 },
     { id: 'car', name: 'Car Payment', icon: '🚗', type: 'loan', amount: 300, dueDay: 1, totalPayments: 60 },
     { id: 'insurance', name: 'Insurance', icon: '🛡️', type: 'recurring', amount: 150, dueDay: 15 },
-    { id: 'internet', name: 'Internet', icon: '📡', type: 'recurring', amount: 60, dueDay: 1 }
+    { id: 'internet', name: 'Internet', icon: '📡', type: 'recurring', amount: 60, dueDay: 1 },
+    { id: 'creditcard', name: 'Credit Card', icon: '💳', type: 'creditcard', amount: 50, dueDay: 15, currentBalance: 0, minPayment: 50 }
 ];
 
 // Common savings goal templates for wizard
@@ -139,10 +140,24 @@ const EXPENSES = [
         type: 'goal',
         dueDate: new Date(2026, 11, 31),
         description: 'Emergency savings goal'
+    },
+    {
+        id: 'creditcard',
+        name: 'Credit Card',
+        icon: '\u{1F4B3}',
+        amount: 50,
+        type: 'creditcard',
+        dueDay: 15,
+        currentBalance: 1500,
+        minPayment: 50,
+        creditLimit: 5000,
+        interestRate: 19.99,
+        billingCloseDay: 25,
+        description: 'Credit card payment'
     }
 ];
 
-// Calculate total monthly expenses (recurring + loan + variable payments)
+// Calculate total monthly expenses (recurring + loan + variable + creditcard payments)
 const MONTHLY_TOTAL = EXPENSES
-    .filter(e => e.type === 'recurring' || e.type === 'loan' || e.type === 'variable')
+    .filter(e => e.type === 'recurring' || e.type === 'loan' || e.type === 'variable' || e.type === 'creditcard')
     .reduce((sum, e) => sum + e.amount, 0);

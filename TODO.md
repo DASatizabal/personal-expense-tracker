@@ -29,7 +29,7 @@ A **personal finance tracker** with intelligent automation, cross-platform acces
   - Click to select, click outside to close
   - Reusable component for Settings + Wizard + Mini-wizards
 
-- [ ] **2. Credit Card expense type** - Add new type to config:
+- [x] **2. Credit Card expense type** - Add new type to config:
   - Required inputs: Current balance, Payment due date, Minimum amount due
   - Optional inputs: Interest rate (APR), Credit limit, Billing cycle close date
 

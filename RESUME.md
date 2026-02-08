@@ -147,6 +147,7 @@ Edit `js/app.js`
 
 | Version | Changes |
 |---------|---------|
+| v1.1.4 | Credit Card expense type with balance, min payment, APR, limit |
 | v1.1.3 | Icon picker grid for expense form (replaces text input) |
 | v1.1.2 | Settings: option to run setup wizard again |
 | v1.1.1 | Wizard expenses: toggle selection by clicking again |
