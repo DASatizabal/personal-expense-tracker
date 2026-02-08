@@ -23,7 +23,7 @@ A **personal finance tracker** with intelligent automation, cross-platform acces
 ## Short-Term Priorities
 
 ### Phase 1: Foundation Components
-- [ ] **1. Icon picker grid** - Replace text input for icons with visual emoji grid:
+- [x] **1. Icon picker grid** - Replace text input for icons with visual emoji grid:
   - Reference implementation: `/hours-worked-tracker` icon picker
   - Grid popup with 30+ common emoji options
   - Click to select, click outside to close

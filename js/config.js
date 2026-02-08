@@ -1,6 +1,6 @@
 // Configuration for Personal Expense Tracker
 
-const APP_VERSION = '1.1.2';
+const APP_VERSION = '1.1.3';
 
 // Firebase Configuration
 // To set up:

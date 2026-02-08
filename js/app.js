@@ -32,6 +32,59 @@ function updateThemeIcon(isDark) {
     }
 }
 
+// Icon Picker - Common emoji icons for expenses
+const EXPENSE_ICONS = [
+    '🏠', '🚗', '📱', '💡', '🛡️', '📡', '💳', '🏥', '🎓', '👶',
+    '🐕', '🍕', '☕', '🛒', '⛽', '🚌', '✈️', '🏋️', '💈', '👔',
+    '💰', '🎯', '🏖️', '🎮', '💻', '📚', '🎬', '🎵', '🔧', '🏰',
+    '💎', '🎁', '🏆', '⭐', '❤️', '🔥', '🌟', '🚀', '🌴', '🎄'
+];
+
+// Initialize an icon picker on given elements
+function initIconPicker(inputId, btnId, gridId) {
+    const input = document.getElementById(inputId);
+    const btn = document.getElementById(btnId);
+    const grid = document.getElementById(gridId);
+    if (!input || !btn || !grid) return;
+
+    // Populate grid
+    grid.innerHTML = EXPENSE_ICONS.map(icon =>
+        `<button type="button" class="icon-pick-item p-2 text-xl rounded-lg hover:bg-white/10 transition-colors text-center" data-icon="${icon}">${icon}</button>`
+    ).join('');
+
+    // Toggle grid visibility
+    btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        // Close any other open icon pickers first
+        document.querySelectorAll('.icon-picker-grid').forEach(g => {
+            if (g.id !== gridId) g.classList.add('hidden');
+        });
+        grid.classList.toggle('hidden');
+    });
+
+    // Select icon
+    grid.addEventListener('click', (e) => {
+        const item = e.target.closest('.icon-pick-item');
+        if (!item) return;
+        const icon = item.dataset.icon;
+        input.value = icon;
+        btn.textContent = icon;
+        grid.classList.add('hidden');
+    });
+
+    // Mark grid for global close handler
+    grid.classList.add('icon-picker-grid');
+}
+
+// Close all icon pickers when clicking outside
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('.icon-picker-grid') && !e.target.closest('[id$="-picker-btn"]')) {
+        document.querySelectorAll('.icon-picker-grid').forEach(grid => {
+            grid.classList.add('hidden');
+        });
+    }
+});
+
 // Currency Management
 let currentCurrency = DEFAULT_CURRENCY;
 let defaultCurrency = DEFAULT_CURRENCY;
@@ -359,10 +412,15 @@ function openExpenseForm(expenseId = null) {
     const modal = document.getElementById('expense-form-modal');
     const title = document.getElementById('expense-form-title');
     const form = document.getElementById('expense-form');
+    const iconInput = document.getElementById('expense-icon');
+    const iconBtn = document.getElementById('expense-icon-picker-btn');
 
     // Reset form
     form.reset();
     document.getElementById('expense-edit-id').value = '';
+
+    // Default icon
+    const defaultIcon = '🏠';
 
     if (expenseId) {
         // Edit mode
@@ -371,7 +429,8 @@ function openExpenseForm(expenseId = null) {
         if (expense) {
             document.getElementById('expense-edit-id').value = expense.id;
             document.getElementById('expense-name').value = expense.name;
-            document.getElementById('expense-icon').value = expense.icon;
+            iconInput.value = expense.icon || defaultIcon;
+            iconBtn.textContent = expense.icon || defaultIcon;
             document.getElementById('expense-type').value = expense.type;
             document.getElementById('expense-amount').value = expense.amount;
             if (expense.dueDay) {
@@ -388,6 +447,8 @@ function openExpenseForm(expenseId = null) {
     } else {
         // Add mode
         title.textContent = I18n.t('settings.addExpense');
+        iconInput.value = defaultIcon;
+        iconBtn.textContent = defaultIcon;
     }
 
     updateExpenseFormFields();
@@ -2468,6 +2529,9 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('expense-form-backdrop')?.addEventListener('click', closeExpenseForm);
     document.getElementById('expense-form')?.addEventListener('submit', handleExpenseFormSubmit);
     document.getElementById('expense-type')?.addEventListener('change', updateExpenseFormFields);
+
+    // Initialize icon picker for expense form
+    initIconPicker('expense-icon', 'expense-icon-picker-btn', 'expense-icon-picker-grid');
 
     // Initialize sync status indicator
     initSyncIndicator();

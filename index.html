@@ -554,11 +554,15 @@
                             data-i18n-placeholder="settings.expenseNamePlaceholder" placeholder="e.g., Rent, Phone, etc.">
                     </div>
                     <div class="grid grid-cols-2 gap-4">
-                        <div>
-                            <label for="expense-icon" class="block text-sm font-medium text-slate-400 mb-2" data-i18n="settings.icon">Icon</label>
-                            <input type="text" id="expense-icon" required maxlength="2"
-                                class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white text-center text-2xl focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition-colors"
-                                placeholder="🏠">
+                        <div class="relative">
+                            <label class="block text-sm font-medium text-slate-400 mb-2" data-i18n="settings.icon">Icon</label>
+                            <input type="hidden" id="expense-icon" value="🏠">
+                            <button type="button" id="expense-icon-picker-btn"
+                                class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-center text-2xl focus:outline-none focus:border-violet-500 focus:ring-1 focus:ring-violet-500 transition-colors cursor-pointer hover:bg-white/10">
+                                🏠
+                            </button>
+                            <div id="expense-icon-picker-grid" class="hidden absolute z-10 top-full mt-1 left-0 w-64 max-h-48 overflow-y-auto bg-slate-800 border border-white/10 rounded-xl shadow-2xl p-2 grid grid-cols-6 gap-1">
+                            </div>
                         </div>
                         <div>
                             <label for="expense-type" class="block text-sm font-medium text-slate-400 mb-2" data-i18n="settings.type">Type</label>
