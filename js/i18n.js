@@ -239,7 +239,97 @@ const I18n = {
             'rates.unavailable': 'Rates unavailable',
             'toast.ratesFetched': 'Exchange rates updated',
             'toast.ratesFetchFailed': 'Using cached exchange rates',
-            'tooltip.rateStatus': 'Exchange rates last updated'
+            'tooltip.rateStatus': 'Exchange rates last updated',
+
+            // Setup Wizard - Step 1: Welcome
+            'wizard.welcome.title': 'Welcome, {{name}}!',
+            'wizard.welcome.subtitle': "Let's get your expense tracker set up",
+            'wizard.welcome.description': "We'll walk you through a few quick steps to personalize your experience and help you start tracking your expenses right away.",
+            'wizard.welcome.start': "Let's Get Started",
+
+            // Setup Wizard - Step 2: Expense Types
+            'wizard.types.title': 'Track Different Types of Expenses',
+            'wizard.types.subtitle': 'Four powerful ways to manage your money',
+            'wizard.types.recurring.title': 'Monthly Bills',
+            'wizard.types.recurring.description': 'Regular expenses like rent, insurance, and subscriptions that repeat each month.',
+            'wizard.types.loan.title': 'Loans',
+            'wizard.types.loan.description': 'Track payments on car loans, mortgages, or personal loans with payment counters.',
+            'wizard.types.goal.title': 'Savings Goals',
+            'wizard.types.goal.description': 'Set targets for vacation funds, emergency savings, or big purchases with deadlines.',
+            'wizard.types.variable.title': 'Variable Bills',
+            'wizard.types.variable.description': 'Expenses that change monthly like utilities, groceries, or gas.',
+
+            // Setup Wizard - Step 3: Features
+            'wizard.features.title': 'Powerful Features',
+            'wizard.features.subtitle': 'Everything you need to stay on top of your finances',
+            'wizard.features.sync.title': 'Cloud Sync',
+            'wizard.features.sync.description': 'Your data syncs across all devices via Google Sheets',
+            'wizard.features.currency.title': 'Multi-Currency',
+            'wizard.features.currency.description': 'Support for 10 currencies with real-time conversion',
+            'wizard.features.history.title': 'Payment History',
+            'wizard.features.history.description': 'Track all payments with dates, notes, and easy editing',
+            'wizard.features.bulk.title': 'Bulk Payments',
+            'wizard.features.bulk.description': 'Mark multiple expenses as paid in one action',
+
+            // Setup Wizard - Step 4: Pay Schedule
+            'wizard.schedule.title': 'Your Pay Schedule',
+            'wizard.schedule.subtitle': 'Help us calculate per-paycheck savings amounts',
+            'wizard.schedule.frequency': 'How often do you get paid?',
+            'wizard.schedule.weekly': 'Weekly',
+            'wizard.schedule.biweekly': 'Every 2 Weeks',
+            'wizard.schedule.semimonthly': '1st & 15th',
+            'wizard.schedule.monthly': 'Monthly',
+            'wizard.schedule.nextPayday': 'When is your next payday?',
+            'wizard.schedule.optional': '(Optional - can set later in Settings)',
+
+            // Setup Wizard - Step 5: Currency
+            'wizard.currency.title': 'Choose Your Currency',
+            'wizard.currency.subtitle': 'All your expenses will be tracked in this currency',
+            'wizard.currency.hint': 'You can view amounts in other currencies using the converter in the top bar.',
+
+            // Setup Wizard - Step 6: Add Expenses
+            'wizard.expenses.title': 'Add Your Expenses',
+            'wizard.expenses.subtitle': 'Quick-add common expenses or create custom ones',
+            'wizard.expenses.common': 'Common Expenses',
+            'wizard.expenses.rent': 'Rent/Mortgage',
+            'wizard.expenses.utilities': 'Utilities',
+            'wizard.expenses.phone': 'Phone',
+            'wizard.expenses.car': 'Car Payment',
+            'wizard.expenses.insurance': 'Insurance',
+            'wizard.expenses.internet': 'Internet',
+            'wizard.expenses.custom': 'Add Custom Expense',
+            'wizard.expenses.added': '{{name}} added!',
+            'wizard.expenses.yourExpenses': 'Your Expenses',
+            'wizard.expenses.none': 'No expenses added yet',
+
+            // Setup Wizard - Step 7: Savings Goal
+            'wizard.goals.title': 'Set a Savings Goal',
+            'wizard.goals.subtitle': 'Optional: Start saving for something special',
+            'wizard.goals.suggestions': 'Popular Goals',
+            'wizard.goals.emergency': 'Emergency Fund',
+            'wizard.goals.vacation': 'Vacation',
+            'wizard.goals.downpayment': 'Down Payment',
+            'wizard.goals.retirement': 'Retirement',
+            'wizard.goals.custom': 'Custom Goal',
+            'wizard.goals.amount': 'Target Amount',
+            'wizard.goals.targetDate': 'Target Date',
+            'wizard.goals.perPaycheck': "You'll need to save {{amount}} per paycheck",
+
+            // Setup Wizard - Step 8: Complete
+            'wizard.complete.title': "You're All Set!",
+            'wizard.complete.subtitle': 'Your expense tracker is ready to use',
+            'wizard.complete.summary': 'Setup Summary',
+            'wizard.complete.expenses': '{{count}} expenses added',
+            'wizard.complete.currency': 'Currency: {{currency}}',
+            'wizard.complete.schedule': 'Pay schedule: {{schedule}}',
+            'wizard.complete.tip': 'Tip: Use the Bulk Payment button to quickly mark multiple expenses as paid on payday!',
+            'wizard.complete.dashboard': 'Go to Dashboard',
+
+            // Wizard Navigation
+            'wizard.next': 'Next',
+            'wizard.back': 'Back',
+            'wizard.skip': 'Skip',
+            'wizard.stepOf': 'Step {{current}} of {{total}}'
         },
 
         // Spanish translations
@@ -470,7 +560,97 @@ const I18n = {
             'rates.unavailable': 'Tasas no disponibles',
             'toast.ratesFetched': 'Tasas de cambio actualizadas',
             'toast.ratesFetchFailed': 'Usando tasas de cambio en caché',
-            'tooltip.rateStatus': 'Última actualización de tasas'
+            'tooltip.rateStatus': 'Última actualización de tasas',
+
+            // Setup Wizard - Step 1: Welcome
+            'wizard.welcome.title': '¡Bienvenido, {{name}}!',
+            'wizard.welcome.subtitle': 'Configuremos tu rastreador de gastos',
+            'wizard.welcome.description': 'Te guiaremos a través de unos pasos rápidos para personalizar tu experiencia y ayudarte a comenzar a rastrear tus gastos.',
+            'wizard.welcome.start': 'Comenzar',
+
+            // Setup Wizard - Step 2: Expense Types
+            'wizard.types.title': 'Rastrea Diferentes Tipos de Gastos',
+            'wizard.types.subtitle': 'Cuatro formas poderosas de administrar tu dinero',
+            'wizard.types.recurring.title': 'Facturas Mensuales',
+            'wizard.types.recurring.description': 'Gastos regulares como alquiler, seguro y suscripciones que se repiten cada mes.',
+            'wizard.types.loan.title': 'Préstamos',
+            'wizard.types.loan.description': 'Rastrea pagos de préstamos de auto, hipotecas o préstamos personales con contadores.',
+            'wizard.types.goal.title': 'Metas de Ahorro',
+            'wizard.types.goal.description': 'Establece objetivos para vacaciones, ahorros de emergencia o compras grandes con fechas límite.',
+            'wizard.types.variable.title': 'Facturas Variables',
+            'wizard.types.variable.description': 'Gastos que cambian mensualmente como servicios, comida o gasolina.',
+
+            // Setup Wizard - Step 3: Features
+            'wizard.features.title': 'Funciones Poderosas',
+            'wizard.features.subtitle': 'Todo lo que necesitas para controlar tus finanzas',
+            'wizard.features.sync.title': 'Sincronización en la Nube',
+            'wizard.features.sync.description': 'Tus datos se sincronizan en todos tus dispositivos via Google Sheets',
+            'wizard.features.currency.title': 'Multi-Moneda',
+            'wizard.features.currency.description': 'Soporte para 10 monedas con conversión en tiempo real',
+            'wizard.features.history.title': 'Historial de Pagos',
+            'wizard.features.history.description': 'Rastrea todos los pagos con fechas, notas y edición fácil',
+            'wizard.features.bulk.title': 'Pagos Múltiples',
+            'wizard.features.bulk.description': 'Marca múltiples gastos como pagados en una acción',
+
+            // Setup Wizard - Step 4: Pay Schedule
+            'wizard.schedule.title': 'Tu Calendario de Pago',
+            'wizard.schedule.subtitle': 'Ayúdanos a calcular los montos de ahorro por cheque',
+            'wizard.schedule.frequency': '¿Con qué frecuencia te pagan?',
+            'wizard.schedule.weekly': 'Semanal',
+            'wizard.schedule.biweekly': 'Cada 2 Semanas',
+            'wizard.schedule.semimonthly': '1ro y 15',
+            'wizard.schedule.monthly': 'Mensual',
+            'wizard.schedule.nextPayday': '¿Cuándo es tu próximo día de pago?',
+            'wizard.schedule.optional': '(Opcional - puedes configurar después en Ajustes)',
+
+            // Setup Wizard - Step 5: Currency
+            'wizard.currency.title': 'Elige Tu Moneda',
+            'wizard.currency.subtitle': 'Todos tus gastos se rastrearán en esta moneda',
+            'wizard.currency.hint': 'Puedes ver montos en otras monedas usando el convertidor en la barra superior.',
+
+            // Setup Wizard - Step 6: Add Expenses
+            'wizard.expenses.title': 'Agrega Tus Gastos',
+            'wizard.expenses.subtitle': 'Agrega gastos comunes rápidamente o crea personalizados',
+            'wizard.expenses.common': 'Gastos Comunes',
+            'wizard.expenses.rent': 'Alquiler/Hipoteca',
+            'wizard.expenses.utilities': 'Servicios',
+            'wizard.expenses.phone': 'Teléfono',
+            'wizard.expenses.car': 'Pago de Auto',
+            'wizard.expenses.insurance': 'Seguro',
+            'wizard.expenses.internet': 'Internet',
+            'wizard.expenses.custom': 'Agregar Gasto Personalizado',
+            'wizard.expenses.added': '¡{{name}} agregado!',
+            'wizard.expenses.yourExpenses': 'Tus Gastos',
+            'wizard.expenses.none': 'No hay gastos agregados aún',
+
+            // Setup Wizard - Step 7: Savings Goal
+            'wizard.goals.title': 'Establece una Meta de Ahorro',
+            'wizard.goals.subtitle': 'Opcional: Comienza a ahorrar para algo especial',
+            'wizard.goals.suggestions': 'Metas Populares',
+            'wizard.goals.emergency': 'Fondo de Emergencia',
+            'wizard.goals.vacation': 'Vacaciones',
+            'wizard.goals.downpayment': 'Enganche',
+            'wizard.goals.retirement': 'Jubilación',
+            'wizard.goals.custom': 'Meta Personalizada',
+            'wizard.goals.amount': 'Monto Objetivo',
+            'wizard.goals.targetDate': 'Fecha Objetivo',
+            'wizard.goals.perPaycheck': 'Necesitarás ahorrar {{amount}} por cheque',
+
+            // Setup Wizard - Step 8: Complete
+            'wizard.complete.title': '¡Todo Listo!',
+            'wizard.complete.subtitle': 'Tu rastreador de gastos está listo para usar',
+            'wizard.complete.summary': 'Resumen de Configuración',
+            'wizard.complete.expenses': '{{count}} gastos agregados',
+            'wizard.complete.currency': 'Moneda: {{currency}}',
+            'wizard.complete.schedule': 'Calendario de pago: {{schedule}}',
+            'wizard.complete.tip': '¡Consejo: Usa el botón de Pago Múltiple para marcar varios gastos como pagados el día de pago!',
+            'wizard.complete.dashboard': 'Ir al Panel',
+
+            // Wizard Navigation
+            'wizard.next': 'Siguiente',
+            'wizard.back': 'Atrás',
+            'wizard.skip': 'Omitir',
+            'wizard.stepOf': 'Paso {{current}} de {{total}}'
         },
 
         // Haitian Creole translations
@@ -701,7 +881,97 @@ const I18n = {
             'rates.unavailable': 'To pa disponib',
             'toast.ratesFetched': 'To echanj mete ajou',
             'toast.ratesFetchFailed': 'Sèvi ak to echanj anrejistre',
-            'tooltip.rateStatus': 'Dènye miz ajou to echanj'
+            'tooltip.rateStatus': 'Dènye miz ajou to echanj',
+
+            // Setup Wizard - Step 1: Welcome
+            'wizard.welcome.title': 'Byenveni, {{name}}!',
+            'wizard.welcome.subtitle': 'Ann konfigire trackè depans ou',
+            'wizard.welcome.description': 'Nou pral gide ou atravè kèk etap rapid pou pèsonalize eksperyans ou e ede ou kòmanse swiv depans ou.',
+            'wizard.welcome.start': 'Ann Kòmanse',
+
+            // Setup Wizard - Step 2: Expense Types
+            'wizard.types.title': 'Swiv Diferan Kalite Depans',
+            'wizard.types.subtitle': 'Kat fason pisan pou jere lajan ou',
+            'wizard.types.recurring.title': 'Bòdwo Chak Mwa',
+            'wizard.types.recurring.description': 'Depans regilye tankou lwaye, asirans ak abònman ki repete chak mwa.',
+            'wizard.types.loan.title': 'Prè',
+            'wizard.types.loan.description': 'Swiv peman prè machin, ipotèk oswa prè pèsonèl ak kontè peman.',
+            'wizard.types.goal.title': 'Objektif Epay',
+            'wizard.types.goal.description': 'Mete objektif pou vakans, epay ijans oswa gwo acha ak dat limit.',
+            'wizard.types.variable.title': 'Bòdwo Varyab',
+            'wizard.types.variable.description': 'Depans ki chanje chak mwa tankou sèvis piblik, manje oswa gaz.',
+
+            // Setup Wizard - Step 3: Features
+            'wizard.features.title': 'Fonksyon Pisan',
+            'wizard.features.subtitle': 'Tout sa ou bezwen pou kenbe finans ou sou kontwòl',
+            'wizard.features.sync.title': 'Senkronizasyon Nyaj',
+            'wizard.features.sync.description': 'Done ou yo senkronize sou tout aparèy ou yo via Google Sheets',
+            'wizard.features.currency.title': 'Plizyè Lajan',
+            'wizard.features.currency.description': 'Sipò pou 10 lajan ak konvèsyon an tan reyèl',
+            'wizard.features.history.title': 'Istwa Peman',
+            'wizard.features.history.description': 'Swiv tout peman ak dat, nòt ak modifikasyon fasil',
+            'wizard.features.bulk.title': 'Peman Miltip',
+            'wizard.features.bulk.description': 'Make plizyè depans kòm peye nan yon sèl aksyon',
+
+            // Setup Wizard - Step 4: Pay Schedule
+            'wizard.schedule.title': 'Orè Peman Ou',
+            'wizard.schedule.subtitle': 'Ede nou kalkile montan epay pa chèk',
+            'wizard.schedule.frequency': 'Konbyen fwa yo peye ou?',
+            'wizard.schedule.weekly': 'Chak Semèn',
+            'wizard.schedule.biweekly': 'Chak 2 Semèn',
+            'wizard.schedule.semimonthly': '1ye ak 15',
+            'wizard.schedule.monthly': 'Chak Mwa',
+            'wizard.schedule.nextPayday': 'Ki lè pwochen jou peman ou?',
+            'wizard.schedule.optional': '(Opsyonèl - ou ka konfigire pita nan Paramèt)',
+
+            // Setup Wizard - Step 5: Currency
+            'wizard.currency.title': 'Chwazi Lajan Ou',
+            'wizard.currency.subtitle': 'Tout depans ou yo pral swiv nan lajan sa a',
+            'wizard.currency.hint': 'Ou ka wè montan nan lòt lajan lè w itilize konvètisè nan ba anwo a.',
+
+            // Setup Wizard - Step 6: Add Expenses
+            'wizard.expenses.title': 'Ajoute Depans Ou',
+            'wizard.expenses.subtitle': 'Ajoute depans komen rapidman oswa kreye pèsonalize',
+            'wizard.expenses.common': 'Depans Komen',
+            'wizard.expenses.rent': 'Lwaye/Ipotèk',
+            'wizard.expenses.utilities': 'Sèvis Piblik',
+            'wizard.expenses.phone': 'Telefòn',
+            'wizard.expenses.car': 'Peman Machin',
+            'wizard.expenses.insurance': 'Asirans',
+            'wizard.expenses.internet': 'Entènèt',
+            'wizard.expenses.custom': 'Ajoute Depans Pèsonalize',
+            'wizard.expenses.added': '{{name}} ajoute!',
+            'wizard.expenses.yourExpenses': 'Depans Ou',
+            'wizard.expenses.none': 'Pa gen depans ajoute toujou',
+
+            // Setup Wizard - Step 7: Savings Goal
+            'wizard.goals.title': 'Mete yon Objektif Epay',
+            'wizard.goals.subtitle': 'Opsyonèl: Kòmanse ekonomize pou yon bagay espesyal',
+            'wizard.goals.suggestions': 'Objektif Popilè',
+            'wizard.goals.emergency': 'Fon Ijans',
+            'wizard.goals.vacation': 'Vakans',
+            'wizard.goals.downpayment': 'Avans',
+            'wizard.goals.retirement': 'Retrèt',
+            'wizard.goals.custom': 'Objektif Pèsonalize',
+            'wizard.goals.amount': 'Montan Objektif',
+            'wizard.goals.targetDate': 'Dat Objektif',
+            'wizard.goals.perPaycheck': 'Ou pral bezwen ekonomize {{amount}} pa chèk',
+
+            // Setup Wizard - Step 8: Complete
+            'wizard.complete.title': 'Ou Pare!',
+            'wizard.complete.subtitle': 'Trackè depans ou pare pou itilize',
+            'wizard.complete.summary': 'Rezime Konfigirasyon',
+            'wizard.complete.expenses': '{{count}} depans ajoute',
+            'wizard.complete.currency': 'Lajan: {{currency}}',
+            'wizard.complete.schedule': 'Orè peman: {{schedule}}',
+            'wizard.complete.tip': 'Konsèy: Itilize bouton Peman Miltip pou make plizyè depans kòm peye nan jou peman!',
+            'wizard.complete.dashboard': 'Ale nan Tablo',
+
+            // Wizard Navigation
+            'wizard.next': 'Pwochen',
+            'wizard.back': 'Retounen',
+            'wizard.skip': 'Sote',
+            'wizard.stepOf': 'Etap {{current}} nan {{total}}'
         }
     },
 

@@ -1,6 +1,6 @@
 // Configuration for Personal Expense Tracker
 
-const APP_VERSION = '1.0.1';
+const APP_VERSION = '1.1.0';
 
 // Firebase Configuration
 // To set up:
@@ -44,12 +44,37 @@ const CURRENCIES = {
 
 const DEFAULT_CURRENCY = 'USD';
 
+// Pay schedule options for wizard
+const PAY_SCHEDULES = {
+    weekly: { id: 'weekly', days: 7 },
+    biweekly: { id: 'biweekly', days: 14 },
+    semimonthly: { id: 'semimonthly', days: 15 },  // Approximate
+    monthly: { id: 'monthly', days: 30 }
+};
+
+// Common expense templates for wizard quick-add
+const EXPENSE_TEMPLATES = [
+    { id: 'rent', name: 'Rent/Mortgage', icon: '🏠', type: 'recurring', amount: 1000, dueDay: 1 },
+    { id: 'utilities', name: 'Utilities', icon: '💡', type: 'variable', amount: 150, dueDay: 15 },
+    { id: 'phone', name: 'Phone', icon: '📱', type: 'recurring', amount: 50, dueDay: 1 },
+    { id: 'car', name: 'Car Payment', icon: '🚗', type: 'loan', amount: 300, dueDay: 1, totalPayments: 60 },
+    { id: 'insurance', name: 'Insurance', icon: '🛡️', type: 'recurring', amount: 150, dueDay: 15 },
+    { id: 'internet', name: 'Internet', icon: '📡', type: 'recurring', amount: 60, dueDay: 1 }
+];
+
+// Common savings goal templates for wizard
+const GOAL_TEMPLATES = [
+    { id: 'emergency', name: 'Emergency Fund', icon: '🚨', amount: 5000 },
+    { id: 'vacation', name: 'Vacation', icon: '🏖️', amount: 2000 },
+    { id: 'downpayment', name: 'Down Payment', icon: '🏡', amount: 20000 },
+    { id: 'retirement', name: 'Retirement', icon: '👴', amount: 10000 }
+];
+
 const CONFIG = {
 
     // Exchange rate API (Open Exchange Rates)
-    // Sign up for a free API key at https://openexchangerates.org/signup/free
     EXCHANGE_RATE_URL: 'https://openexchangerates.org/api/latest.json',
-    EXCHANGE_RATE_API_KEY: 'YOUR_API_KEY',
+    EXCHANGE_RATE_API_KEY: '4df6530bf55348d8a952d0c4c4e4ccd2',
     EXCHANGE_RATE_CACHE_HOURS: 6,  // Refresh rates every 6 hours
 
     // Google Apps Script URL

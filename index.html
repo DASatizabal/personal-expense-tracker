@@ -281,6 +281,211 @@
             </div>
         </div>
 
+        <!-- Setup Wizard Modal -->
+        <div class="fixed inset-0 z-[160] hidden items-center justify-center p-4" id="wizard-modal">
+            <div class="absolute inset-0 bg-slate-950/95 backdrop-blur-md"></div>
+            <div class="relative w-full max-w-lg bg-slate-900/90 backdrop-blur-xl rounded-2xl border border-white/10 shadow-2xl animate-slide-up modal-content overflow-hidden">
+                <!-- Progress Bar -->
+                <div class="h-1 bg-white/10">
+                    <div class="h-full bg-gradient-to-r from-violet-500 to-cyan-500 transition-all duration-300" id="wizard-progress" style="width: 12.5%"></div>
+                </div>
+
+                <!-- Step Indicator -->
+                <div class="px-6 pt-4 text-center">
+                    <span class="text-xs text-slate-500" id="wizard-step-indicator">Step 1 of 8</span>
+                </div>
+
+                <!-- Wizard Steps Container -->
+                <div class="relative overflow-hidden" id="wizard-steps">
+                    <!-- Step 1: Welcome -->
+                    <div class="wizard-step p-6 text-center" data-step="1">
+                        <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-violet-500 to-cyan-500 flex items-center justify-center">
+                            <i data-lucide="sparkles" class="w-8 h-8 text-white"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-white mb-2" id="wizard-welcome-title">Welcome!</h2>
+                        <p class="text-slate-400 mb-4" data-i18n="wizard.welcome.subtitle">Let's get your expense tracker set up</p>
+                        <p class="text-sm text-slate-500 mb-6" data-i18n="wizard.welcome.description">We'll walk you through a few quick steps to personalize your experience and help you start tracking your expenses right away.</p>
+                        <button class="w-full py-3 bg-gradient-to-r from-violet-600 to-cyan-600 hover:from-violet-500 hover:to-cyan-500 text-white font-semibold rounded-xl transition-all" id="wizard-start-btn" data-i18n="wizard.welcome.start">Let's Get Started</button>
+                    </div>
+
+                    <!-- Step 2: Expense Types -->
+                    <div class="wizard-step hidden p-6" data-step="2">
+                        <h2 class="text-xl font-bold text-white mb-2 text-center" data-i18n="wizard.types.title">Track Different Types of Expenses</h2>
+                        <p class="text-slate-400 text-sm text-center mb-6" data-i18n="wizard.types.subtitle">Four powerful ways to manage your money</p>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div class="p-4 bg-white/5 rounded-xl border border-white/10">
+                                <div class="text-2xl mb-2">📅</div>
+                                <h3 class="font-semibold text-white text-sm" data-i18n="wizard.types.recurring.title">Monthly Bills</h3>
+                                <p class="text-xs text-slate-400 mt-1" data-i18n="wizard.types.recurring.description">Regular expenses like rent and subscriptions</p>
+                            </div>
+                            <div class="p-4 bg-white/5 rounded-xl border border-white/10">
+                                <div class="text-2xl mb-2">🏦</div>
+                                <h3 class="font-semibold text-white text-sm" data-i18n="wizard.types.loan.title">Loans</h3>
+                                <p class="text-xs text-slate-400 mt-1" data-i18n="wizard.types.loan.description">Track payments with counters</p>
+                            </div>
+                            <div class="p-4 bg-white/5 rounded-xl border border-white/10">
+                                <div class="text-2xl mb-2">🎯</div>
+                                <h3 class="font-semibold text-white text-sm" data-i18n="wizard.types.goal.title">Savings Goals</h3>
+                                <p class="text-xs text-slate-400 mt-1" data-i18n="wizard.types.goal.description">Save for vacations or emergencies</p>
+                            </div>
+                            <div class="p-4 bg-white/5 rounded-xl border border-white/10">
+                                <div class="text-2xl mb-2">📈</div>
+                                <h3 class="font-semibold text-white text-sm" data-i18n="wizard.types.variable.title">Variable Bills</h3>
+                                <p class="text-xs text-slate-400 mt-1" data-i18n="wizard.types.variable.description">Expenses that change monthly</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Features -->
+                    <div class="wizard-step hidden p-6" data-step="3">
+                        <h2 class="text-xl font-bold text-white mb-2 text-center" data-i18n="wizard.features.title">Powerful Features</h2>
+                        <p class="text-slate-400 text-sm text-center mb-6" data-i18n="wizard.features.subtitle">Everything you need to stay on top of your finances</p>
+                        <div class="space-y-3">
+                            <div class="flex items-center gap-3 p-3 bg-white/5 rounded-xl border border-white/10">
+                                <div class="w-10 h-10 rounded-lg bg-violet-500/20 flex items-center justify-center">
+                                    <i data-lucide="cloud" class="w-5 h-5 text-violet-400"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-white text-sm" data-i18n="wizard.features.sync.title">Cloud Sync</h3>
+                                    <p class="text-xs text-slate-400" data-i18n="wizard.features.sync.description">Syncs across devices via Google Sheets</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3 p-3 bg-white/5 rounded-xl border border-white/10">
+                                <div class="w-10 h-10 rounded-lg bg-cyan-500/20 flex items-center justify-center">
+                                    <i data-lucide="coins" class="w-5 h-5 text-cyan-400"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-white text-sm" data-i18n="wizard.features.currency.title">Multi-Currency</h3>
+                                    <p class="text-xs text-slate-400" data-i18n="wizard.features.currency.description">10 currencies with real-time conversion</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3 p-3 bg-white/5 rounded-xl border border-white/10">
+                                <div class="w-10 h-10 rounded-lg bg-green-500/20 flex items-center justify-center">
+                                    <i data-lucide="history" class="w-5 h-5 text-green-400"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-white text-sm" data-i18n="wizard.features.history.title">Payment History</h3>
+                                    <p class="text-xs text-slate-400" data-i18n="wizard.features.history.description">Track all payments with dates and notes</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3 p-3 bg-white/5 rounded-xl border border-white/10">
+                                <div class="w-10 h-10 rounded-lg bg-amber-500/20 flex items-center justify-center">
+                                    <i data-lucide="layers" class="w-5 h-5 text-amber-400"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-semibold text-white text-sm" data-i18n="wizard.features.bulk.title">Bulk Payments</h3>
+                                    <p class="text-xs text-slate-400" data-i18n="wizard.features.bulk.description">Mark multiple expenses as paid at once</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Pay Schedule -->
+                    <div class="wizard-step hidden p-6" data-step="4">
+                        <h2 class="text-xl font-bold text-white mb-2 text-center" data-i18n="wizard.schedule.title">Your Pay Schedule</h2>
+                        <p class="text-slate-400 text-sm text-center mb-6" data-i18n="wizard.schedule.subtitle">Help us calculate per-paycheck savings amounts</p>
+                        <div class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-400 mb-2" data-i18n="wizard.schedule.frequency">How often do you get paid?</label>
+                                <div class="grid grid-cols-2 gap-2">
+                                    <button class="pay-schedule-btn p-3 bg-white/5 border border-white/10 rounded-xl text-white text-sm hover:border-violet-500 transition-colors" data-schedule="weekly" data-i18n="wizard.schedule.weekly">Weekly</button>
+                                    <button class="pay-schedule-btn p-3 bg-white/5 border border-violet-500 rounded-xl text-white text-sm" data-schedule="biweekly" data-i18n="wizard.schedule.biweekly">Every 2 Weeks</button>
+                                    <button class="pay-schedule-btn p-3 bg-white/5 border border-white/10 rounded-xl text-white text-sm hover:border-violet-500 transition-colors" data-schedule="semimonthly" data-i18n="wizard.schedule.semimonthly">1st & 15th</button>
+                                    <button class="pay-schedule-btn p-3 bg-white/5 border border-white/10 rounded-xl text-white text-sm hover:border-violet-500 transition-colors" data-schedule="monthly" data-i18n="wizard.schedule.monthly">Monthly</button>
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-400 mb-2" data-i18n="wizard.schedule.nextPayday">When is your next payday?</label>
+                                <input type="date" id="wizard-next-payday" class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-violet-500 transition-colors">
+                                <p class="text-xs text-slate-500 mt-1" data-i18n="wizard.schedule.optional">(Optional - can set later in Settings)</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 5: Currency -->
+                    <div class="wizard-step hidden p-6" data-step="5">
+                        <h2 class="text-xl font-bold text-white mb-2 text-center" data-i18n="wizard.currency.title">Choose Your Currency</h2>
+                        <p class="text-slate-400 text-sm text-center mb-6" data-i18n="wizard.currency.subtitle">All your expenses will be tracked in this currency</p>
+                        <div class="grid grid-cols-2 gap-2 max-h-64 overflow-y-auto" id="wizard-currency-grid">
+                            <!-- Populated by JavaScript -->
+                        </div>
+                        <p class="text-xs text-slate-500 mt-4 text-center" data-i18n="wizard.currency.hint">You can view amounts in other currencies using the converter in the top bar.</p>
+                    </div>
+
+                    <!-- Step 6: Add Expenses -->
+                    <div class="wizard-step hidden p-6" data-step="6">
+                        <h2 class="text-xl font-bold text-white mb-2 text-center" data-i18n="wizard.expenses.title">Add Your Expenses</h2>
+                        <p class="text-slate-400 text-sm text-center mb-4" data-i18n="wizard.expenses.subtitle">Quick-add common expenses or create custom ones</p>
+                        <div class="mb-4">
+                            <label class="block text-xs font-medium text-slate-500 mb-2" data-i18n="wizard.expenses.common">Common Expenses</label>
+                            <div class="grid grid-cols-3 gap-2" id="wizard-expense-templates">
+                                <!-- Populated by JavaScript -->
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-500 mb-2" data-i18n="wizard.expenses.yourExpenses">Your Expenses</label>
+                            <div class="bg-white/5 rounded-xl border border-white/10 p-3 min-h-[80px] max-h-32 overflow-y-auto" id="wizard-added-expenses">
+                                <p class="text-slate-500 text-sm text-center py-4" data-i18n="wizard.expenses.none">No expenses added yet</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Step 7: Savings Goal -->
+                    <div class="wizard-step hidden p-6" data-step="7">
+                        <h2 class="text-xl font-bold text-white mb-2 text-center" data-i18n="wizard.goals.title">Set a Savings Goal</h2>
+                        <p class="text-slate-400 text-sm text-center mb-4" data-i18n="wizard.goals.subtitle">Optional: Start saving for something special</p>
+                        <div class="mb-4">
+                            <label class="block text-xs font-medium text-slate-500 mb-2" data-i18n="wizard.goals.suggestions">Popular Goals</label>
+                            <div class="grid grid-cols-2 gap-2" id="wizard-goal-templates">
+                                <!-- Populated by JavaScript -->
+                            </div>
+                        </div>
+                        <div class="space-y-3 hidden" id="wizard-goal-form">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-400 mb-1" data-i18n="wizard.goals.amount">Target Amount</label>
+                                <input type="number" id="wizard-goal-amount" class="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-violet-500" placeholder="5000">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-400 mb-1" data-i18n="wizard.goals.targetDate">Target Date</label>
+                                <input type="date" id="wizard-goal-date" class="w-full px-4 py-2 bg-white/5 border border-white/10 rounded-xl text-white focus:outline-none focus:border-violet-500">
+                            </div>
+                            <p class="text-sm text-cyan-400 text-center" id="wizard-goal-perPaycheck"></p>
+                        </div>
+                    </div>
+
+                    <!-- Step 8: Complete -->
+                    <div class="wizard-step hidden p-6 text-center" data-step="8">
+                        <div class="w-16 h-16 mx-auto mb-4 rounded-full bg-gradient-to-br from-green-500 to-emerald-500 flex items-center justify-center">
+                            <i data-lucide="check" class="w-8 h-8 text-white"></i>
+                        </div>
+                        <h2 class="text-2xl font-bold text-white mb-2" data-i18n="wizard.complete.title">You're All Set!</h2>
+                        <p class="text-slate-400 mb-6" data-i18n="wizard.complete.subtitle">Your expense tracker is ready to use</p>
+                        <div class="bg-white/5 rounded-xl border border-white/10 p-4 mb-6 text-left">
+                            <h3 class="text-sm font-semibold text-white mb-3" data-i18n="wizard.complete.summary">Setup Summary</h3>
+                            <div class="space-y-2 text-sm" id="wizard-summary">
+                                <!-- Populated by JavaScript -->
+                            </div>
+                        </div>
+                        <p class="text-xs text-slate-500 mb-4" data-i18n="wizard.complete.tip">Tip: Use the Bulk Payment button to quickly mark multiple expenses as paid on payday!</p>
+                        <button class="w-full py-3 bg-gradient-to-r from-violet-600 to-cyan-600 hover:from-violet-500 hover:to-cyan-500 text-white font-semibold rounded-xl transition-all" id="wizard-complete-btn" data-i18n="wizard.complete.dashboard">Go to Dashboard</button>
+                    </div>
+                </div>
+
+                <!-- Navigation Buttons -->
+                <div class="flex items-center justify-between p-4 border-t border-white/10" id="wizard-nav">
+                    <button class="px-4 py-2 text-slate-400 hover:text-white transition-colors hidden" id="wizard-back-btn">
+                        <span data-i18n="wizard.back">Back</span>
+                    </button>
+                    <button class="px-4 py-2 text-slate-500 hover:text-slate-300 transition-colors hidden" id="wizard-skip-btn">
+                        <span data-i18n="wizard.skip">Skip</span>
+                    </button>
+                    <button class="ml-auto px-6 py-2 bg-violet-600 hover:bg-violet-500 text-white rounded-xl transition-colors hidden" id="wizard-next-btn">
+                        <span data-i18n="wizard.next">Next</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
     </div>
 
         <!-- Settings Modal -->

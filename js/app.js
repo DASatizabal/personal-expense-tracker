@@ -786,11 +786,14 @@ async function handleSignedIn(user) {
 
         // Mark as initialized
         localStorage.setItem(FirebaseAuth.getUserStoragePrefix() + 'expense_initialized', 'true');
+    }
 
-        await init();
-        showToast(I18n.t('toast.welcome', { name: FirebaseAuth.getUserFirstName() }), 'success');
+    // Check if setup wizard needs to be shown
+    if (!isWizardCompleted()) {
+        // Show setup wizard for new/incomplete users
+        showSetupWizard();
     } else {
-        // Existing user, initialize app
+        // Wizard complete, initialize app normally
         await init();
         showToast(I18n.t('toast.welcomeBack'), 'success');
     }
@@ -1942,6 +1945,463 @@ async function handleBulkPaymentSubmit(e) {
     }
 }
 
+// ============================================
+// Setup Wizard
+// ============================================
+
+let wizardStep = 1;
+const WIZARD_TOTAL_STEPS = 8;
+let wizardPaySchedule = 'biweekly';
+let wizardNextPayday = null;
+let wizardCurrency = DEFAULT_CURRENCY;
+let wizardExpenses = [];
+let wizardGoal = null;
+
+function getWizardStorageKey(key) {
+    if (typeof FirebaseAuth !== 'undefined' && FirebaseAuth.isSignedIn()) {
+        return FirebaseAuth.getUserStoragePrefix() + key;
+    }
+    return key;
+}
+
+function isWizardCompleted() {
+    return localStorage.getItem(getWizardStorageKey('wizard_completed')) === 'true';
+}
+
+function showSetupWizard() {
+    const modal = document.getElementById('wizard-modal');
+    if (!modal) return;
+
+    // Load saved progress
+    const savedStep = localStorage.getItem(getWizardStorageKey('wizard_step'));
+    wizardStep = savedStep ? parseInt(savedStep) : 1;
+
+    // Reset wizard state
+    wizardExpenses = [];
+    wizardGoal = null;
+    wizardPaySchedule = 'biweekly';
+    wizardCurrency = DEFAULT_CURRENCY;
+
+    // Update welcome title with user name
+    const welcomeTitle = document.getElementById('wizard-welcome-title');
+    if (welcomeTitle && typeof FirebaseAuth !== 'undefined' && FirebaseAuth.isSignedIn()) {
+        welcomeTitle.textContent = I18n.t('wizard.welcome.title', { name: FirebaseAuth.getUserFirstName() });
+    }
+
+    // Populate currency grid
+    populateWizardCurrencyGrid();
+
+    // Populate expense templates
+    populateWizardExpenseTemplates();
+
+    // Populate goal templates
+    populateWizardGoalTemplates();
+
+    // Show modal
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+
+    // Show current step
+    showWizardStep(wizardStep);
+
+    initLucideIcons();
+}
+
+function hideSetupWizard() {
+    const modal = document.getElementById('wizard-modal');
+    if (!modal) return;
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+}
+
+function showWizardStep(step) {
+    wizardStep = step;
+
+    // Save progress
+    localStorage.setItem(getWizardStorageKey('wizard_step'), step.toString());
+
+    // Update progress bar
+    const progress = document.getElementById('wizard-progress');
+    if (progress) {
+        progress.style.width = `${(step / WIZARD_TOTAL_STEPS) * 100}%`;
+    }
+
+    // Update step indicator
+    const indicator = document.getElementById('wizard-step-indicator');
+    if (indicator) {
+        indicator.textContent = I18n.t('wizard.stepOf', { current: step, total: WIZARD_TOTAL_STEPS });
+    }
+
+    // Hide all steps, show current
+    document.querySelectorAll('.wizard-step').forEach(el => {
+        el.classList.add('hidden');
+    });
+    const currentStep = document.querySelector(`.wizard-step[data-step="${step}"]`);
+    if (currentStep) {
+        currentStep.classList.remove('hidden');
+    }
+
+    // Update navigation buttons
+    updateWizardNavButtons();
+
+    // Step-specific initialization
+    if (step === 5) {
+        // Currency step - highlight current selection
+        updateWizardCurrencySelection();
+    } else if (step === 6) {
+        // Expenses step - update added expenses list
+        updateWizardAddedExpenses();
+    } else if (step === 8) {
+        // Complete step - show summary
+        updateWizardSummary();
+    }
+
+    initLucideIcons();
+}
+
+function updateWizardNavButtons() {
+    const backBtn = document.getElementById('wizard-back-btn');
+    const nextBtn = document.getElementById('wizard-next-btn');
+    const skipBtn = document.getElementById('wizard-skip-btn');
+    const nav = document.getElementById('wizard-nav');
+
+    // Step 1: Only show start button (in step content), hide nav
+    if (wizardStep === 1) {
+        nav.classList.add('hidden');
+        return;
+    }
+
+    // Step 8: Only show complete button (in step content), hide nav
+    if (wizardStep === 8) {
+        nav.classList.add('hidden');
+        return;
+    }
+
+    nav.classList.remove('hidden');
+
+    // Back button - always visible except step 1
+    backBtn.classList.remove('hidden');
+
+    // Next button - always visible
+    nextBtn.classList.remove('hidden');
+
+    // Skip button - visible on optional steps (6, 7)
+    if (wizardStep === 6 || wizardStep === 7) {
+        skipBtn.classList.remove('hidden');
+    } else {
+        skipBtn.classList.add('hidden');
+    }
+}
+
+function nextWizardStep() {
+    if (wizardStep < WIZARD_TOTAL_STEPS) {
+        showWizardStep(wizardStep + 1);
+    }
+}
+
+function prevWizardStep() {
+    if (wizardStep > 1) {
+        showWizardStep(wizardStep - 1);
+    }
+}
+
+function completeWizard() {
+    // Save wizard settings
+    saveWizardSettings();
+
+    // Mark wizard as complete
+    localStorage.setItem(getWizardStorageKey('wizard_completed'), 'true');
+    localStorage.removeItem(getWizardStorageKey('wizard_step'));
+
+    // Hide wizard
+    hideSetupWizard();
+
+    // Initialize app
+    init();
+
+    showToast(I18n.t('toast.welcomeBack'), 'success');
+}
+
+function saveWizardSettings() {
+    // Save pay schedule
+    localStorage.setItem(getWizardStorageKey('pay_schedule'), JSON.stringify({
+        type: wizardPaySchedule,
+        nextPayday: wizardNextPayday
+    }));
+
+    // Save currency preference
+    defaultCurrency = wizardCurrency;
+    currentCurrency = wizardCurrency;
+
+    // Combine wizard expenses with any existing user expenses
+    if (wizardExpenses.length > 0) {
+        userExpenses = [...wizardExpenses];
+        if (wizardGoal) {
+            userExpenses.push(wizardGoal);
+        }
+        saveExpenseConfig();
+    }
+}
+
+function populateWizardCurrencyGrid() {
+    const grid = document.getElementById('wizard-currency-grid');
+    if (!grid) return;
+
+    grid.innerHTML = Object.values(CURRENCIES).map(currency => `
+        <button type="button" class="wizard-currency-btn p-3 bg-white/5 border border-white/10 rounded-xl text-left hover:border-violet-500 transition-colors ${currency.code === wizardCurrency ? 'border-violet-500 bg-violet-500/10' : ''}" data-currency="${currency.code}">
+            <div class="font-semibold text-white">${currency.symbol} ${currency.code}</div>
+            <div class="text-xs text-slate-400">${currency.name}</div>
+        </button>
+    `).join('');
+
+    // Add click handlers
+    grid.querySelectorAll('.wizard-currency-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            wizardCurrency = btn.dataset.currency;
+            updateWizardCurrencySelection();
+        });
+    });
+}
+
+function updateWizardCurrencySelection() {
+    const grid = document.getElementById('wizard-currency-grid');
+    if (!grid) return;
+
+    grid.querySelectorAll('.wizard-currency-btn').forEach(btn => {
+        if (btn.dataset.currency === wizardCurrency) {
+            btn.classList.add('border-violet-500', 'bg-violet-500/10');
+            btn.classList.remove('border-white/10');
+        } else {
+            btn.classList.remove('border-violet-500', 'bg-violet-500/10');
+            btn.classList.add('border-white/10');
+        }
+    });
+}
+
+function populateWizardExpenseTemplates() {
+    const container = document.getElementById('wizard-expense-templates');
+    if (!container) return;
+
+    container.innerHTML = EXPENSE_TEMPLATES.map(template => `
+        <button type="button" class="wizard-expense-template p-2 bg-white/5 border border-white/10 rounded-lg text-center hover:border-violet-500 hover:bg-violet-500/10 transition-colors" data-id="${template.id}">
+            <div class="text-xl mb-1">${template.icon}</div>
+            <div class="text-xs text-white truncate">${template.name}</div>
+        </button>
+    `).join('');
+
+    // Add click handlers
+    container.querySelectorAll('.wizard-expense-template').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const template = EXPENSE_TEMPLATES.find(t => t.id === btn.dataset.id);
+            if (template && !wizardExpenses.find(e => e.id === template.id)) {
+                wizardExpenses.push({ ...template });
+                showToast(I18n.t('wizard.expenses.added', { name: template.name }), 'success');
+                updateWizardAddedExpenses();
+
+                // Mark as added
+                btn.classList.add('opacity-50');
+                btn.disabled = true;
+            }
+        });
+    });
+}
+
+function updateWizardAddedExpenses() {
+    const container = document.getElementById('wizard-added-expenses');
+    if (!container) return;
+
+    if (wizardExpenses.length === 0) {
+        container.innerHTML = `<p class="text-slate-500 text-sm text-center py-4" data-i18n="wizard.expenses.none">${I18n.t('wizard.expenses.none')}</p>`;
+        return;
+    }
+
+    container.innerHTML = wizardExpenses.map(expense => `
+        <div class="flex items-center justify-between py-1">
+            <div class="flex items-center gap-2">
+                <span>${expense.icon}</span>
+                <span class="text-sm text-white">${expense.name}</span>
+            </div>
+            <button type="button" class="wizard-remove-expense text-slate-400 hover:text-red-400" data-id="${expense.id}">
+                <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+        </div>
+    `).join('');
+
+    // Add remove handlers
+    container.querySelectorAll('.wizard-remove-expense').forEach(btn => {
+        btn.addEventListener('click', () => {
+            wizardExpenses = wizardExpenses.filter(e => e.id !== btn.dataset.id);
+            updateWizardAddedExpenses();
+
+            // Re-enable template button
+            const templateBtn = document.querySelector(`.wizard-expense-template[data-id="${btn.dataset.id}"]`);
+            if (templateBtn) {
+                templateBtn.classList.remove('opacity-50');
+                templateBtn.disabled = false;
+            }
+        });
+    });
+
+    initLucideIcons();
+}
+
+function populateWizardGoalTemplates() {
+    const container = document.getElementById('wizard-goal-templates');
+    if (!container) return;
+
+    container.innerHTML = GOAL_TEMPLATES.map(template => `
+        <button type="button" class="wizard-goal-template p-3 bg-white/5 border border-white/10 rounded-xl text-center hover:border-violet-500 transition-colors" data-id="${template.id}">
+            <div class="text-2xl mb-1">${template.icon}</div>
+            <div class="text-sm text-white">${template.name}</div>
+        </button>
+    `).join('');
+
+    // Add click handlers
+    container.querySelectorAll('.wizard-goal-template').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const template = GOAL_TEMPLATES.find(t => t.id === btn.dataset.id);
+            if (template) {
+                // Show goal form and pre-fill
+                const form = document.getElementById('wizard-goal-form');
+                const amountInput = document.getElementById('wizard-goal-amount');
+
+                if (form && amountInput) {
+                    form.classList.remove('hidden');
+                    amountInput.value = template.amount;
+
+                    // Set default date to 1 year from now
+                    const dateInput = document.getElementById('wizard-goal-date');
+                    if (dateInput) {
+                        const nextYear = new Date();
+                        nextYear.setFullYear(nextYear.getFullYear() + 1);
+                        dateInput.value = nextYear.toISOString().split('T')[0];
+                    }
+
+                    wizardGoal = {
+                        id: template.id,
+                        name: template.name,
+                        icon: template.icon,
+                        type: 'goal',
+                        amount: template.amount,
+                        dueDate: new Date(new Date().setFullYear(new Date().getFullYear() + 1))
+                    };
+
+                    updateWizardGoalPerPaycheck();
+                }
+
+                // Highlight selected
+                container.querySelectorAll('.wizard-goal-template').forEach(b => {
+                    b.classList.remove('border-violet-500', 'bg-violet-500/10');
+                    b.classList.add('border-white/10');
+                });
+                btn.classList.add('border-violet-500', 'bg-violet-500/10');
+                btn.classList.remove('border-white/10');
+            }
+        });
+    });
+}
+
+function updateWizardGoalPerPaycheck() {
+    const amountInput = document.getElementById('wizard-goal-amount');
+    const dateInput = document.getElementById('wizard-goal-date');
+    const perPaycheckEl = document.getElementById('wizard-goal-perPaycheck');
+
+    if (!amountInput || !dateInput || !perPaycheckEl || !wizardGoal) return;
+
+    const amount = parseFloat(amountInput.value) || 0;
+    const targetDate = dateInput.value ? new Date(dateInput.value) : null;
+
+    if (amount > 0 && targetDate) {
+        // Calculate paychecks until target date
+        const today = new Date();
+        const daysUntil = Math.max(1, Math.floor((targetDate - today) / (1000 * 60 * 60 * 24)));
+        const payScheduleDays = PAY_SCHEDULES[wizardPaySchedule]?.days || 14;
+        const paychecks = Math.max(1, Math.floor(daysUntil / payScheduleDays));
+        const perPaycheck = amount / paychecks;
+
+        perPaycheckEl.textContent = I18n.t('wizard.goals.perPaycheck', {
+            amount: formatCurrency(perPaycheck)
+        });
+
+        // Update wizard goal
+        wizardGoal.amount = amount;
+        wizardGoal.dueDate = targetDate;
+    } else {
+        perPaycheckEl.textContent = '';
+    }
+}
+
+function updateWizardSummary() {
+    const container = document.getElementById('wizard-summary');
+    if (!container) return;
+
+    const scheduleNames = {
+        weekly: I18n.t('wizard.schedule.weekly'),
+        biweekly: I18n.t('wizard.schedule.biweekly'),
+        semimonthly: I18n.t('wizard.schedule.semimonthly'),
+        monthly: I18n.t('wizard.schedule.monthly')
+    };
+
+    const totalExpenses = wizardExpenses.length + (wizardGoal ? 1 : 0);
+
+    container.innerHTML = `
+        <div class="flex items-center gap-2 text-slate-300">
+            <i data-lucide="check-circle" class="w-4 h-4 text-green-400"></i>
+            <span>${I18n.t('wizard.complete.expenses', { count: totalExpenses })}</span>
+        </div>
+        <div class="flex items-center gap-2 text-slate-300">
+            <i data-lucide="check-circle" class="w-4 h-4 text-green-400"></i>
+            <span>${I18n.t('wizard.complete.currency', { currency: CURRENCIES[wizardCurrency]?.name || wizardCurrency })}</span>
+        </div>
+        <div class="flex items-center gap-2 text-slate-300">
+            <i data-lucide="check-circle" class="w-4 h-4 text-green-400"></i>
+            <span>${I18n.t('wizard.complete.schedule', { schedule: scheduleNames[wizardPaySchedule] || wizardPaySchedule })}</span>
+        </div>
+    `;
+
+    initLucideIcons();
+}
+
+function initWizardEventListeners() {
+    // Start button (step 1)
+    document.getElementById('wizard-start-btn')?.addEventListener('click', nextWizardStep);
+
+    // Navigation buttons
+    document.getElementById('wizard-next-btn')?.addEventListener('click', nextWizardStep);
+    document.getElementById('wizard-back-btn')?.addEventListener('click', prevWizardStep);
+    document.getElementById('wizard-skip-btn')?.addEventListener('click', nextWizardStep);
+
+    // Complete button (step 8)
+    document.getElementById('wizard-complete-btn')?.addEventListener('click', completeWizard);
+
+    // Pay schedule buttons
+    document.querySelectorAll('.pay-schedule-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            wizardPaySchedule = btn.dataset.schedule;
+
+            // Update UI
+            document.querySelectorAll('.pay-schedule-btn').forEach(b => {
+                b.classList.remove('border-violet-500');
+                b.classList.add('border-white/10');
+            });
+            btn.classList.add('border-violet-500');
+            btn.classList.remove('border-white/10');
+
+            // Recalculate goal per paycheck if set
+            updateWizardGoalPerPaycheck();
+        });
+    });
+
+    // Next payday input
+    document.getElementById('wizard-next-payday')?.addEventListener('change', (e) => {
+        wizardNextPayday = e.target.value;
+    });
+
+    // Goal amount/date inputs
+    document.getElementById('wizard-goal-amount')?.addEventListener('input', updateWizardGoalPerPaycheck);
+    document.getElementById('wizard-goal-date')?.addEventListener('change', updateWizardGoalPerPaycheck);
+}
+
 // Event Listeners
 closeModalBtn.addEventListener('click', closePaymentModal);
 paymentModal.addEventListener('click', (e) => {
@@ -2052,6 +2512,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Display version
     document.getElementById('version-tag').textContent = 'v' + APP_VERSION;
+
+    // Initialize setup wizard event listeners
+    initWizardEventListeners();
 
     // Initialize Firebase auth and check sign-in state
     initFirebaseAuth();

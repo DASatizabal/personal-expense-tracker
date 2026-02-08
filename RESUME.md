@@ -1,6 +1,6 @@
 # Personal Expense Tracker - Project Resume
 
-**Current Version: 1.0.1**
+**Current Version: 1.1.0**
 
 ---
 
@@ -147,5 +147,6 @@ Edit `js/app.js`
 
 | Version | Changes |
 |---------|---------|
+| v1.1.0 | **Setup Wizard**: 8-step onboarding wizard for new users with feature tour, pay schedule, currency selection, and expense quick-add |
 | v1.0.1 | Configure Firebase Auth and Google Sheets cloud sync |
 | v1.0.0 | Initial release - forked from alex-expense-tracker as a general-use personal expense tracker |

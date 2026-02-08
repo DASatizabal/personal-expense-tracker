@@ -1,6 +1,6 @@
 # Personal Expense Tracker
 
-**Version 1.0.1**
+**Version 1.1.0**
 
 A modern, mobile-friendly web app for tracking recurring expenses, loan payments, and savings goals. Features a dark glassmorphism UI and syncs with Google Sheets for cloud storage.
 
