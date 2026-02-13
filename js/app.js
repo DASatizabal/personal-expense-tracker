@@ -2256,7 +2256,8 @@ function processNextSelectedTemplate() {
 
     // Get first unprocessed template
     const template = selectedTemplates[0];
-    openMiniWizard(template, true); // true = called from wizard flow
+    // Brief delay ensures previous modal close is fully processed by the browser
+    requestAnimationFrame(() => openMiniWizard(template, true));
 }
 
 function prevWizardStep() {
@@ -2493,6 +2494,13 @@ function openMiniWizard(template, fromWizardFlow = false) {
     // Show/hide fields based on type
     updateMiniWizardFields(template.type);
 
+    // Ensure amount type toggle is visible for recurring/variable types
+    if (template.type === 'recurring' || template.type === 'variable') {
+        const amountTypeGroup = document.getElementById('mini-wizard-amount-type-group');
+        if (amountTypeGroup) amountTypeGroup.classList.remove('hidden');
+        setMiniWizardAmountType(template.type === 'variable' ? 'variable' : 'fixed');
+    }
+
     // Pre-fill type-specific defaults
     if (template.type === 'recurring' || template.type === 'variable' || template.type === 'loan') {
         document.getElementById('mini-wizard-amount').value = template.amount || '';
@@ -2550,43 +2558,64 @@ function updateMiniWizardFields(type) {
     const totalPaymentsGroup = document.getElementById('mini-wizard-totalpayments-group');
     const goalGroup = document.getElementById('mini-wizard-goal-group');
     const creditcardGroup = document.getElementById('mini-wizard-creditcard-group');
+    const amountTypeGroup = document.getElementById('mini-wizard-amount-type-group');
 
     // Hide all optional groups first
-    totalPaymentsGroup.classList.add('hidden');
-    goalGroup.classList.add('hidden');
-    creditcardGroup.classList.add('hidden');
+    totalPaymentsGroup?.classList.add('hidden');
+    goalGroup?.classList.add('hidden');
+    creditcardGroup?.classList.add('hidden');
+    amountTypeGroup?.classList.add('hidden');
 
     // Show/hide based on type
     if (type === 'goal') {
-        amountGroup.classList.add('hidden');
-        duedayGroup.classList.add('hidden');
-        paidGroup.classList.add('hidden');
-        goalGroup.classList.remove('hidden');
+        amountGroup?.classList.add('hidden');
+        duedayGroup?.classList.add('hidden');
+        paidGroup?.classList.add('hidden');
+        goalGroup?.classList.remove('hidden');
     } else if (type === 'creditcard') {
-        amountGroup.classList.add('hidden');
-        duedayGroup.classList.remove('hidden');
-        paidGroup.classList.remove('hidden');
-        creditcardGroup.classList.remove('hidden');
+        amountGroup?.classList.add('hidden');
+        duedayGroup?.classList.remove('hidden');
+        paidGroup?.classList.remove('hidden');
+        creditcardGroup?.classList.remove('hidden');
     } else if (type === 'loan') {
-        amountGroup.classList.remove('hidden');
-        duedayGroup.classList.remove('hidden');
-        paidGroup.classList.remove('hidden');
-        totalPaymentsGroup.classList.remove('hidden');
+        amountGroup?.classList.remove('hidden');
+        duedayGroup?.classList.remove('hidden');
+        paidGroup?.classList.remove('hidden');
+        totalPaymentsGroup?.classList.remove('hidden');
     } else {
         // recurring, variable
-        amountGroup.classList.remove('hidden');
-        duedayGroup.classList.remove('hidden');
-        paidGroup.classList.remove('hidden');
+        amountGroup?.classList.remove('hidden');
+        duedayGroup?.classList.remove('hidden');
+        paidGroup?.classList.remove('hidden');
+        amountTypeGroup?.classList.remove('hidden');
     }
 
     // Update required attributes
-    document.getElementById('mini-wizard-amount').required = (type !== 'goal' && type !== 'creditcard');
-    document.getElementById('mini-wizard-dueday').required = (type !== 'goal');
-    document.getElementById('mini-wizard-totalpayments').required = (type === 'loan');
-    document.getElementById('mini-wizard-target').required = (type === 'goal');
-    document.getElementById('mini-wizard-targetdate').required = (type === 'goal');
-    document.getElementById('mini-wizard-balance').required = (type === 'creditcard');
-    document.getElementById('mini-wizard-minpayment').required = (type === 'creditcard');
+    const setReq = (id, val) => { const el = document.getElementById(id); if (el) el.required = val; };
+    setReq('mini-wizard-amount', type !== 'goal' && type !== 'creditcard');
+    setReq('mini-wizard-dueday', type !== 'goal');
+    setReq('mini-wizard-totalpayments', type === 'loan');
+    setReq('mini-wizard-target', type === 'goal');
+    setReq('mini-wizard-targetdate', type === 'goal');
+    setReq('mini-wizard-balance', type === 'creditcard');
+    setReq('mini-wizard-minpayment', type === 'creditcard');
+}
+
+function setMiniWizardAmountType(amountType) {
+    document.querySelectorAll('.amount-type-btn').forEach(btn => {
+        const isSelected = btn.dataset.amountType === amountType;
+        btn.classList.toggle('border-violet-500', isSelected);
+        btn.classList.toggle('border-white/10', !isSelected);
+    });
+    const note = document.getElementById('mini-wizard-variable-note');
+    if (note) note.classList.toggle('hidden', amountType !== 'variable');
+    // Update amount label
+    const amountLabel = document.querySelector('#mini-wizard-amount-group label');
+    if (amountLabel) {
+        amountLabel.textContent = amountType === 'variable'
+            ? (typeof I18n !== 'undefined' ? I18n.t('wizard.amountType.estimatedAmount') : 'Estimated Amount')
+            : (typeof I18n !== 'undefined' ? I18n.t('label.amount') : 'Amount');
+    }
 }
 
 function handleMiniWizardSubmit(addAnother = false) {
@@ -2642,6 +2671,13 @@ function handleMiniWizardSubmit(addAnother = false) {
         if (type === 'loan') {
             expense.totalPayments = parseInt(document.getElementById('mini-wizard-totalpayments').value) || 60;
         }
+        // Override type based on amount type toggle (recurring/variable)
+        if (type === 'recurring' || type === 'variable') {
+            const selectedBtn = document.querySelector('.amount-type-btn.border-violet-500');
+            if (selectedBtn) {
+                expense.type = selectedBtn.dataset.amountType === 'variable' ? 'variable' : 'recurring';
+            }
+        }
         // Check "already paid"
         if (document.getElementById('mini-wizard-already-paid').checked) {
             expense.alreadyPaidThisMonth = true;
@@ -2665,6 +2701,15 @@ function handleMiniWizardSubmit(addAnother = false) {
         document.getElementById('mini-wizard-name').value = '';
         document.getElementById('mini-wizard-expense-icon').value = currentMiniWizardTemplate.icon;
         document.getElementById('mini-wizard-icon-picker-btn').textContent = currentMiniWizardTemplate.icon;
+        // Re-apply field visibility and amount type toggle
+        if (currentMiniWizardTemplate) {
+            updateMiniWizardFields(currentMiniWizardTemplate.type);
+        }
+        if (currentMiniWizardTemplate && (type === 'recurring' || type === 'variable')) {
+            const amountTypeGroup = document.getElementById('mini-wizard-amount-type-group');
+            if (amountTypeGroup) amountTypeGroup.classList.remove('hidden');
+            setMiniWizardAmountType(currentMiniWizardTemplate.type === 'variable' ? 'variable' : 'fixed');
+        }
         // Re-apply defaults
         if (currentMiniWizardTemplate) {
             if (type === 'recurring' || type === 'variable' || type === 'loan') {
@@ -2856,6 +2901,14 @@ function initWizardEventListeners() {
     });
     document.getElementById('mini-wizard-add-another')?.addEventListener('click', () => {
         handleMiniWizardSubmit(true);
+    });
+
+    // Amount type toggle buttons
+    document.querySelectorAll('.amount-type-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            e.preventDefault();
+            setMiniWizardAmountType(btn.dataset.amountType);
+        });
     });
 
     // Initialize icon picker for mini-wizard

@@ -268,6 +268,15 @@ const I18n = {
             'wizard.types.variable.title': 'Variable Bills',
             'wizard.types.variable.description': 'Expenses that change monthly like utilities, groceries, or gas.',
 
+            // Amount Type toggle (mini-wizard)
+            'wizard.amountType.label': 'Amount Type',
+            'wizard.amountType.fixed': 'Fixed',
+            'wizard.amountType.fixedHint': 'Same every month',
+            'wizard.amountType.variable': 'Variable',
+            'wizard.amountType.variableHint': 'Changes monthly',
+            'wizard.amountType.variableNote': 'The amount you enter is an estimate. The app will track your actual payments and show a 3-month average with trend indicators.',
+            'wizard.amountType.estimatedAmount': 'Estimated Amount',
+
             // Setup Wizard - Step 3: Features
             'wizard.features.title': 'Powerful Features',
             'wizard.features.subtitle': 'Everything you need to stay on top of your finances',
@@ -592,6 +601,15 @@ const I18n = {
             'wizard.types.variable.title': 'Facturas Variables',
             'wizard.types.variable.description': 'Gastos que cambian mensualmente como servicios, comida o gasolina.',
 
+            // Amount Type toggle (mini-wizard)
+            'wizard.amountType.label': 'Tipo de Monto',
+            'wizard.amountType.fixed': 'Fijo',
+            'wizard.amountType.fixedHint': 'Igual cada mes',
+            'wizard.amountType.variable': 'Variable',
+            'wizard.amountType.variableHint': 'Cambia mensualmente',
+            'wizard.amountType.variableNote': 'El monto que ingreses es un estimado. La app rastreará tus pagos reales y mostrará un promedio de 3 meses con indicadores de tendencia.',
+            'wizard.amountType.estimatedAmount': 'Monto Estimado',
+
             // Setup Wizard - Step 3: Features
             'wizard.features.title': 'Funciones Poderosas',
             'wizard.features.subtitle': 'Todo lo que necesitas para controlar tus finanzas',
@@ -915,6 +933,15 @@ const I18n = {
             'wizard.types.goal.description': 'Mete objektif pou vakans, epay ijans oswa gwo acha ak dat limit.',
             'wizard.types.variable.title': 'Bòdwo Varyab',
             'wizard.types.variable.description': 'Depans ki chanje chak mwa tankou sèvis piblik, manje oswa gaz.',
+
+            // Amount Type toggle (mini-wizard)
+            'wizard.amountType.label': 'Tip Montan',
+            'wizard.amountType.fixed': 'Fiks',
+            'wizard.amountType.fixedHint': 'Menm chak mwa',
+            'wizard.amountType.variable': 'Varyab',
+            'wizard.amountType.variableHint': 'Chanje chak mwa',
+            'wizard.amountType.variableNote': 'Montan ou antre a se yon estimasyon. App la pral swiv peman reyèl ou yo epi montre yon mwayèn 3 mwa ak endis tandans.',
+            'wizard.amountType.estimatedAmount': 'Montan Estime',
 
             // Setup Wizard - Step 3: Features
             'wizard.features.title': 'Fonksyon Pisan',

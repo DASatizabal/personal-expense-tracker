@@ -532,6 +532,26 @@
                             placeholder="0.00">
                     </div>
 
+                    <!-- Amount Type toggle (recurring, variable) -->
+                    <div id="mini-wizard-amount-type-group" class="hidden">
+                        <label class="block text-sm font-medium text-slate-400 mb-2" data-i18n="wizard.amountType.label">Amount Type</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button type="button" class="amount-type-btn px-3 py-2 bg-white/5 border border-violet-500 rounded-xl text-white text-sm transition-colors" data-amount-type="fixed">
+                                <div class="font-medium" data-i18n="wizard.amountType.fixed">Fixed</div>
+                                <div class="text-xs text-slate-400 mt-0.5" data-i18n="wizard.amountType.fixedHint">Same every month</div>
+                            </button>
+                            <button type="button" class="amount-type-btn px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-white text-sm hover:border-violet-500 transition-colors" data-amount-type="variable">
+                                <div class="font-medium" data-i18n="wizard.amountType.variable">Variable</div>
+                                <div class="text-xs text-slate-400 mt-0.5" data-i18n="wizard.amountType.variableHint">Changes monthly</div>
+                            </button>
+                        </div>
+                        <div id="mini-wizard-variable-note" class="hidden mt-2 p-2 bg-cyan-500/10 border border-cyan-500/20 rounded-lg">
+                            <p class="text-xs text-cyan-400" data-i18n="wizard.amountType.variableNote">
+                                The amount you enter is an estimate. The app will track your actual payments and show a 3-month average with trend indicators.
+                            </p>
+                        </div>
+                    </div>
+
                     <!-- Due Day (recurring, variable, loan, creditcard) -->
                     <div id="mini-wizard-dueday-group">
                         <label for="mini-wizard-dueday" class="block text-sm font-medium text-slate-400 mb-1">Due Day of Month</label>

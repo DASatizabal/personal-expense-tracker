@@ -1,6 +1,6 @@
 # Personal Expense Tracker - Project Resume
 
-**Current Version: 1.2.2**
+**Current Version: 1.2.4**
 
 ---
 
@@ -147,6 +147,8 @@ Edit `js/app.js`
 
 | Version | Changes |
 |---------|---------|
+| v1.2.4 | Fix mini-wizard not showing Amount Type (Fixed/Variable) toggle; add null-safe DOM operations, requestAnimationFrame for wizard transitions, re-apply field visibility on "Add Another" |
+| v1.2.3 | Add "Amount Type" toggle (Fixed/Variable) to mini-wizard forms with explanatory note for variable amounts; i18n translations for all 3 languages |
 | v1.2.2 | Fix past due calculation: use createdDate instead of hardcoded Jan 2026; create payment records for "already paid" flag; expand icon picker to 70 icons |
 | v1.2.1 | Mini-wizard: rename buttons to "Finish Adding [Name]" / "Add Another [Name]", swap positions |
 | v1.2.0 | Mini-wizard system for expense configuration in setup wizard |
